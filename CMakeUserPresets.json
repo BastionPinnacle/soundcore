@@ -1,0 +1,9 @@
+{
+    "version": 4,
+    "vendor": {
+        "conan": {}
+    },
+    "include": [
+        "/home/sebastian/soundcore/cmake-build-debug/build/Debug/generators/CMakePresets.json"
+    ]
+}
