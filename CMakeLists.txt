@@ -16,7 +16,6 @@ include(cmake/find_libs.cmake)
 
 add_executable(main main.cpp ${RESOURCES})
 
+add_subdirectory(src)
 
-target_link_libraries(main PRIVATE hidapi::hidapi)
-target_link_libraries(main PRIVATE fmt::fmt)
-target_link_libraries(main PRIVATE Qt6::Qml Qt6::Gui Qt6::Bluetooth)
+target_link_libraries(main PRIVATE Qt6::Qml Qt6::Gui Qt6::Bluetooth ${PROJECT_NAME})
