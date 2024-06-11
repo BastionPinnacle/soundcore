@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 
     QCoreApplication app(argc, argv);
     DeviceScanner scanner;
-    scanner.scanForDevices();
+    scanner.startScanningForDevices();
     DeviceList device_list;
     QObject::connect(&scanner,&DeviceScanner::deviceDiscovered,&device_list,&DeviceList::onDeviceDiscovered);
     QTimer timer = QTimer();
