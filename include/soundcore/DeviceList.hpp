@@ -8,7 +8,7 @@ class DeviceList : public QObject {
     Q_OBJECT
 public slots:
 
-    std::size_t getNumberOfDevices(){
+    void getNumberOfDevices(){
         std::cout<<devices.size()<<std::endl;
     }
 

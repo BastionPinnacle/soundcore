@@ -14,8 +14,10 @@ set(CMAKE_AUTORCC ON)
 project(soundcore)
 include(cmake/find_libs.cmake)
 
-add_executable(main main.cpp ${RESOURCES})
+set(SOURCES main.cpp)
+qt_add_resources(SOURCES res/resources.qrc)
+qt_add_executable(main ${SOURCES})
 
 add_subdirectory(src)
 
-target_link_libraries(main PRIVATE Qt6::Qml Qt6::Gui Qt6::Bluetooth ${PROJECT_NAME})
+target_link_libraries(main PRIVATE Qt6::Qml Qt6::Gui Qt6::Bluetooth Qt6::Quick ${PROJECT_NAME})

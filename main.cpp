@@ -1,8 +1,10 @@
 #include <iostream>
 #include <QBluetoothDeviceDiscoveryAgent>
 #include <QBluetoothSocket>
-#include <QCoreApplication>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 #include <QLoggingCategory>
+#include <QDirIterator>
 #include "include/soundcore/DeviceScanner.hpp"
 #include "include/soundcore/DeviceList.hpp"
 #include <QTimer>
@@ -55,6 +57,11 @@ public slots:
 
 int main(int argc, char **argv) {
 
+    QGuiApplication app (argc, argv);
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+    return app.exec ();
+    /*
     QCoreApplication app(argc, argv);
     DeviceScanner scanner;
     scanner.startScanningForDevices();
@@ -64,4 +71,5 @@ int main(int argc, char **argv) {
     QObject::connect(&timer, &QTimer::timeout, &device_list, &DeviceList::getNumberOfDevices);
     timer.start(1000);
     app.exec();
+     */
 }
