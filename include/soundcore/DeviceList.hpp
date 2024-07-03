@@ -2,10 +2,14 @@
 #include <QObject>
 #include <QBluetoothDeviceInfo>
 #include "Device.hpp"
+#include "DeviceScanner.hpp"
 #include <iostream>
 
 class DeviceList : public QObject {
     Q_OBJECT
+public:
+    void refresh();
+    void filter();
 public slots:
 
     void getNumberOfDevices(){
@@ -22,7 +26,7 @@ public slots:
 private:
     std::vector<Device> devices;
     bool checkIfAlreadyExists(QBluetoothDeviceInfo device_info){
-        for(const auto& device : devices)
+        for(auto& device : devices)
         {
             auto current_device_info = device.getDeviceInfo();
             if(current_device_info.deviceUuid() == device_info.deviceUuid())

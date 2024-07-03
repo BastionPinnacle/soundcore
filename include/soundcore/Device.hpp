@@ -8,18 +8,12 @@ class Device : public QObject {
 Q_OBJECT
 
 public:
-    Device() {}
+    Device() = delete;
+    Device(const QBluetoothDeviceInfo& device_info);
+    Device(const Device& device);
 
-    Device(QBluetoothDeviceInfo device_info) : device_info(device_info) {}
-
-    Device(const Device& device) : device_info(device.device_info){}
-
-    QBluetoothSocket createSocket();
-
-    QBluetoothDeviceInfo getDeviceInfo() const {
-        return device_info;
-    }
-
+    QBluetoothSocket* createSocket();
+    QBluetoothDeviceInfo getDeviceInfo();
 private:
     QBluetoothDeviceInfo device_info;
 };

@@ -1,41 +1,82 @@
-import QtQuick 2.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Window 2.15
 
-Window {
+ApplicationWindow {
     id: page
 
-    property var divisorWidth: 10
+    property var divisorWidth: 5
 
     color: "lightgray"
-    height: 480
+    height: Screen.height
+    title: "Soundcore Tuner"
     visible: true
-    width: 320
+    width: Screen.width
 
-        Rectangle {
-            id: scannerRectangle
+    Rectangle {
+        id: scannerRectangle
 
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.top: parent.top
-            color: "lightgray"
-            visible: true
-            width: parent.width / 4 - parent.divisorWidth / 2
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.top: parent.top
+        color: "#17bcef"
+        visible: true
+        width: page.width / 4 - divisorWidth / 2
 
-            Component.onCompleted: {
-                console.log(scannerRectangle.height);
+        Column {
+            id: scanColumn
+            anchors.fill: parent
+
+            Row {
+                id: controlRow
+
+                spacing: scannerRectangle.width / 50
+
+                RoundButton {
+                    id: scanButton
+
+                    height: scannerRectangle.height / 20
+                    text: "Scan"
+                    width: scannerRectangle.width / 2 - parent.spacing / 2
+                    radius: height / 3
+                }
+                RoundButton {
+                    id: filterButton
+
+                    height: scannerRectangle.height / 20
+                    text: "Filter"
+                    width: scannerRectangle.width / 2 - parent.spacing / 2
+                    radius: height/3
+                }
             }
         }
-        Rectangle {
-            id: deviceRectangle
+    }
+    Rectangle {
+        id: divisorRectangle
 
-            anchors.bottom: parent.bottom
-            anchors.left: scannerRectangle.right
-            anchors.right: parent.right
-            anchors.top: parent.top
-            color: "black"
-            visible: true
+        anchors.bottom: parent.bottom
+        anchors.left: scannerRectangle.right
+        anchors.top: parent.top
+        color: "white"
+        visible: true
+        width: divisorWidth
+    }
+    Rectangle {
+        id: deviceRectangle
 
-        Component.onCompleted: {
-            console.log(deviceRectangle.height);
+        anchors.bottom: parent.bottom
+        anchors.left: divisorRectangle.right
+        anchors.right: parent.right
+        anchors.top: parent.top
+        color: "#17bcef"
+        visible: true
+
+        Image {
+            id: mainImage
+
+            anchors.fill: parent
+            source: "images/soundcore.png"
         }
     }
 }
+

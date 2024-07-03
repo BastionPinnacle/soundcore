@@ -2,4 +2,8 @@
     <qresource prefix="/qml">
         <file alias="main.qml">main.qml</file>
     </qresource>
+
+    <qresource prefix="/images">
+        <file alias="soundcore.png">soundcore.png</file>
+    </qresource>
 </RCC>
