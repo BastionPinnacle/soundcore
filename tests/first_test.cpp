@@ -1,9 +1,14 @@
 #include <gtest/gtest.h>
+#include "soundcore/DeviceScanner.hpp"
+#include "soundcore/DeviceList.hpp"
 
-// Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
-// Expect two strings not to be equal.
-EXPECT_STRNE("hello", "world");
-// Expect equality.
-EXPECT_EQ(7 * 6, 42);
+
+TEST(DeviceListTest, TestScanning ) {
+    DeviceList device_list;
+    device_list.refresh();
+    std::this_thread::sleep_for(std::chrono::seconds {1});
+    device_list.stopRefreshing();
+    auto devices = device_list.getDevices();
+
+    ASSERT_NE(devices.size(),0);
 }

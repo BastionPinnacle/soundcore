@@ -25,28 +25,103 @@ ApplicationWindow {
 
         Column {
             id: scanColumn
+
             anchors.fill: parent
 
             Row {
                 id: controlRow
 
+                height: parent.height / 20
                 spacing: scannerRectangle.width / 50
+                width: parent.width
 
                 RoundButton {
                     id: scanButton
 
-                    height: scannerRectangle.height / 20
-                    text: "Scan"
-                    width: scannerRectangle.width / 2 - parent.spacing / 2
+                    height: parent.height
                     radius: height / 3
+                    text: "Scan for Devices"
+                    width: parent.width / 2 - parent.spacing / 2
+
+                    onClicked: {
+                        console.log("Scan for devices clicked");
+                    }
                 }
                 RoundButton {
                     id: filterButton
 
-                    height: scannerRectangle.height / 20
-                    text: "Filter"
-                    width: scannerRectangle.width / 2 - parent.spacing / 2
-                    radius: height/3
+                    height: parent.height
+                    radius: height / 3
+                    text: "Filter for Soundcore"
+                    width: parent.width / 2 - parent.spacing / 2
+
+                    onClicked: {
+                        console.log("Filter for soundcore clicked");
+                    }
+                }
+            }
+            ListView {
+                boundsBehavior: Flickable.StopAtBounds
+                boundsMovement: Flickable.StopAtBounds
+                height: (parent.height * 19) / 20
+                orientation: ListView.Vertical
+                width: parent.width
+                clip: true
+
+                delegate: Rectangle {
+                    color: bgcolor
+                    height: 100
+                    width: parent.width
+                }
+                model: ListModel {
+                    ListElement {
+                        bgcolor: 'red'
+                    }
+                    ListElement {
+                        bgcolor: 'yellow'
+                    }
+                    ListElement {
+                        bgcolor: 'white'
+                    }
+                    ListElement {
+                        bgcolor: 'blue'
+                    }
+                    ListElement {
+                        bgcolor: 'green'
+                    }
+                    ListElement {
+                        bgcolor: 'orange'
+                    }
+                    ListElement {
+                        bgcolor: 'black'
+                    }
+                    ListElement {
+                        bgcolor: 'gray'
+                    }
+                    ListElement {
+                        bgcolor: 'red'
+                    }
+                    ListElement {
+                        bgcolor: 'yellow'
+                    }
+                    ListElement {
+                        bgcolor: 'white'
+                    }
+                    ListElement {
+                        bgcolor: 'blue'
+                    }
+                    ListElement {
+                        bgcolor: 'green'
+                    }
+                    ListElement {
+                        bgcolor: 'orange'
+                    }
+                    ListElement {
+                        bgcolor: 'black'
+                    }
+                    ListElement {
+                        bgcolor: 'gray'
+                    }
                 }
             }
         }
@@ -75,7 +150,7 @@ ApplicationWindow {
             id: mainImage
 
             anchors.fill: parent
-            source: "images/soundcore.png"
+            source: "/images/soundcore.png"
         }
     }
 }
