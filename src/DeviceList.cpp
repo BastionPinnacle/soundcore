@@ -1,39 +1,26 @@
-#include <soundcore/DeviceScanner.hpp>
-#include <soundcore/DeviceList.hpp>
-#include <range/v3/view/filter.hpp>
-#include <range/v3/range/conversion.hpp>
-DeviceList::DeviceList() {
-    device_scanner = std::make_unique<DeviceScanner>(*this);
-}
-void DeviceList::refresh()
-{
-    device_scanner->startScan();
+#include <QObject>
+#include <QBluetoothDeviceInfo>
+#include <iostream>
+#include <mutex>
+#include "soundcore/DeviceList.hpp"
+#include "soundcore/DeviceScanner.hpp"
+
+DeviceList::DeviceList(): device_scanner{*this}{}
+
+void DeviceList::refresh() {
+    if (!device_scanner.isScanning()) device_scanner.startScan();
 }
 
 void DeviceList::stopRefreshing() {
-    device_scanner->stopScan();
-}
-
-void DeviceList::filter() {
-    std::lock_guard<std::mutex> lock(mtx);
-    if(device_scanner->isScanning())
-    {
-        qDebug() << "Cannot filter devices, scanner is running";
-        return;
-    }
-    std::vector<Device> filtered_devices;
-    for(auto& device : devices){
-        if(device.name()!=""){
-            filtered_devices.push_back(device);
-        }
-    }
-    devices = std::move(filtered_devices);
-}
-
-std::vector<Device>& DeviceList::getDevices(){
-    return devices;
+    if (device_scanner.isScanning()) device_scanner.stopScan();
 }
 
 void DeviceList::push(QBluetoothDeviceInfo device_info) {
-    devices.push_back(Device{device_info});
+    if (std::find(devices.begin(), devices.end(), device_info) != devices.end()) {
+        devices.emplace_back(device_info);
+    }
+}
+
+std::vector<QBluetoothDeviceInfo> &DeviceList::getDevices() {
+    return devices;
 }

@@ -1,6 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
+import soundcore 1.0
+
 
 ApplicationWindow {
     id: page
@@ -12,6 +14,10 @@ ApplicationWindow {
     title: "Soundcore Tuner"
     visible: true
     width: Screen.width
+
+    DeviceList{
+        id: deviceList
+    }
 
     Rectangle {
         id: scannerRectangle

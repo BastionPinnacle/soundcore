@@ -1,14 +1,14 @@
 #include <iostream>
-#include <QBluetoothDeviceDiscoveryAgent>
-#include <QBluetoothSocket>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QLoggingCategory>
 #include <QDirIterator>
 #include "include/soundcore/DeviceScanner.hpp"
 #include "include/soundcore/DeviceList.hpp"
+#include "include/soundcore/Device.hpp"
 #include <QTimer>
 
+/*
 
 class DeviceDiscoverer : public QObject {
     QBluetoothSocket *qBluetoothSocket;
@@ -55,8 +55,11 @@ public slots:
 
 };
 
-int main(int argc, char **argv) {
+*/
 
+int main(int argc, char **argv) {
+    //qmlRegisterType<DeviceList>("soundcore", 1, 0, "DeviceList");
+    qmlRegisterType<DeviceList>("soundcore", 1, 0, "DeviceList");
     QGuiApplication app (argc, argv);
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));

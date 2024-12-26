@@ -7,11 +7,9 @@
 
 class Device : public QObject {
 Q_OBJECT
-QML_ELEMENT
 public:
     Device() = delete;
     Device(const QBluetoothDeviceInfo& device_info);
-    Device(const Device& device);
 
     Q_INVOKABLE bool connect();
     Q_INVOKABLE void disconnect();

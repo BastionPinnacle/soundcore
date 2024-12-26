@@ -8,4 +8,4 @@ add_library(${PROJECT_NAME} ${HEADERS}
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core Qt6::Bluetooth Qt6::Qml range-v3::range-v3)
+target_link_libraries(${PROJECT_NAME} PUBLIC Qt6::Core Qt6::Bluetooth Qt6::Qml)

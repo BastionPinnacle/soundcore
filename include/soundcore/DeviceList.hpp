@@ -1,12 +1,9 @@
 #pragma once
 #include <QObject>
 #include <QBluetoothDeviceInfo>
-
-#include "soundcore/Device.hpp"
 #include <iostream>
 #include <mutex>
-
-class DeviceScanner;
+#include "soundcore/DeviceScanner.hpp"
 
 class DeviceList : public QObject {
     Q_OBJECT
@@ -14,12 +11,9 @@ public:
     DeviceList();
     Q_INVOKABLE void refresh();
     Q_INVOKABLE void stopRefreshing();
-    Q_INVOKABLE void filter();
-
     void push(QBluetoothDeviceInfo device_info);
-    std::vector<Device>& getDevices();
+    std::vector<QBluetoothDeviceInfo>& getDevices();
 private:
-    std::mutex mtx;
-    std::vector<Device> devices;
-    std::unique_ptr<DeviceScanner> device_scanner;
+    std::vector<QBluetoothDeviceInfo> devices;
+    DeviceScanner device_scanner;
 };

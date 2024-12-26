@@ -4,10 +4,6 @@ Device::Device(const QBluetoothDeviceInfo &device_info) : device_info{device_inf
 {
 }
 
-Device::Device(const Device &device) : device_info{device.device_info}
-{
-}
-
 QString Device::name() const
 {
     return device_info.name();
@@ -20,10 +16,7 @@ bool Device::status() const
 
 bool Device::connect()
 {
-    if(socket)
-    {
-        disconnect();
-    }
+    disconnect();
     socket = new QBluetoothSocket(QBluetoothServiceInfo::Protocol::RfcommProtocol);
     socket->connectToService(device_info.address(),device_info.serviceUuids()[0], QBluetoothSocket::ReadWrite);
     if(socket && socket->canReadLine())
@@ -31,7 +24,6 @@ bool Device::connect()
        return true;
     }
     return false;
-
 }
 
 void Device::disconnect()
