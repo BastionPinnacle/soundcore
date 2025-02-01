@@ -85,11 +85,11 @@ int main(int argc, char **argv) {
     }
     QObject::connect(qBluetoothSocket, &QBluetoothSocket::connected, [qBluetoothSocket](){
         qDebug() << "CONNECTED!";
-        QByteArray hexString = "08ee0000000281140013005a64828c8c82785a4c";
+        QByteArray hexString = "08ee000000028114000200a0968278787878789f";
         QByteArray byteArray = QByteArray::fromHex(hexString);
         qDebug() << "Hex String:" << hexString;
         qDebug() << "Byte Array:" << byteArray;
-        qBluetoothSocket->write(byteArray);
+        qBluetoothSocket->write("08ee000000028114000200a0968278787878789f");
     });
     qBluetoothSocket->connectToService( device.serviceUuids()[0]);
     return app.exec ();

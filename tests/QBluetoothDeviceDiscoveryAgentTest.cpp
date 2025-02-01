@@ -27,18 +27,22 @@ void TestBluetoothDiscovery::testDeviceDiscovery() {
             });
     connect(&service_discovery_agent, &QBluetoothServiceDiscoveryAgent::serviceDiscovered,
             [&bluetooth_socket](QBluetoothServiceInfo service_info) {
-        if(service_info.serviceName() == "Serial Port Profile")
-        {
-            bluetooth_socket.setSocketDescriptor(bluetooth_socket.socketDescriptor(),service_info.socketProtocol(), bluetooth_socket.state(), bluetooth_socket.openMode());
-            bluetooth_socket.connectToService(service_info);
-        }
+                if (service_info.serviceName() == "Serial Port Profile") {
+                    bluetooth_socket.setSocketDescriptor(bluetooth_socket.socketDescriptor(),
+                                                         service_info.socketProtocol(), bluetooth_socket.state(),
+                                                         bluetooth_socket.openMode());
+                    bluetooth_socket.connectToService(service_info);
+                }
+            });
+    connect(&bluetooth_socket, &QBluetoothSocket::connected, [&bluetooth_socket]() {
+        qDebug() << "CONNECTED";
+        bluetooth_socket.write(QByteArray::fromHex("08ee000000028114000200a0968278787878789f"));
+        qDebug() << bluetooth_socket.readAll();
     });
-    connect(&bluetooth_socket, &QBluetoothSocket::connected, [](){qDebug() << "CONNECTED"; });
 
     QSignalSpy device_discovered_spy(&device_discovery_agent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered);
     QSignalSpy device_discovery_finished_spy(&device_discovery_agent, &QBluetoothDeviceDiscoveryAgent::finished);
     QSignalSpy service_discovered_spy(&service_discovery_agent, &QBluetoothServiceDiscoveryAgent::serviceDiscovered);
-
 
 
     QVERIFY(device_discovered_spy.isValid());
