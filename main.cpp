@@ -59,20 +59,38 @@ public slots:
 
 int main(int argc, char **argv) {
     //qmlRegisterType<DeviceList>("soundcore", 1, 0, "DeviceList");
-    qmlRegisterType<DeviceList>("soundcore", 1, 0, "DeviceList");
-    QGuiApplication app (argc, argv);
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
-    return app.exec ();
-    /*
+    //qmlRegisterType<DeviceList>("soundcore", 1, 0, "DeviceList");
+    //QGuiApplication app (argc, argv);
+    //QQmlApplicationEngine engine;
+    //engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
     QCoreApplication app(argc, argv);
-    DeviceScanner scanner;
-    scanner.startScanningForDevices();
-    DeviceList device_list;
-    QObject::connect(&scanner,&DeviceScanner::deviceDiscovered,&device_list,&DeviceList::onDeviceDiscovered);
-    QTimer timer = QTimer();
-    QObject::connect(&timer, &QTimer::timeout, &device_list, &DeviceList::getNumberOfDevices);
-    timer.start(1000);
-    app.exec();
-     */
+    QBluetoothDeviceDiscoveryAgent device_discovery_agent;
+    QList<QBluetoothDeviceInfo> device_list;
+    auto qBluetoothSocket = new QBluetoothSocket(QBluetoothServiceInfo::Protocol::RfcommProtocol);
+    QObject::connect(&device_discovery_agent,
+                     &QBluetoothDeviceDiscoveryAgent::deviceDiscovered,
+                     [&device_list](const QBluetoothDeviceInfo &device) {
+                         qDebug() << "Discovered device:" << device.name() << device.address().toString()
+                                  << device.serviceUuids().size();
+                         device_list.append(device);
+                     });
+    device_discovery_agent.start(QBluetoothDeviceDiscoveryAgent::supportedDiscoveryMethods());
+    device_discovery_agent.stop();
+    qDebug() << device_list.size();
+    auto device = device_list.at(0);
+    qDebug() << device.serviceUuids().size();
+    for(auto service : device.serviceUuids())
+    {
+        qDebug() << service;
+    }
+    QObject::connect(qBluetoothSocket, &QBluetoothSocket::connected, [qBluetoothSocket](){
+        qDebug() << "CONNECTED!";
+        QByteArray hexString = "08ee0000000281140013005a64828c8c82785a4c";
+        QByteArray byteArray = QByteArray::fromHex(hexString);
+        qDebug() << "Hex String:" << hexString;
+        qDebug() << "Byte Array:" << byteArray;
+        qBluetoothSocket->write(byteArray);
+    });
+    qBluetoothSocket->connectToService( device.serviceUuids()[0]);
+    return app.exec ();
 }

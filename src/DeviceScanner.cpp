@@ -11,7 +11,8 @@ void DeviceScanner::run (){
     device_discovery_agent.start(QBluetoothDeviceDiscoveryAgent::supportedDiscoveryMethods());
 }
 
-void DeviceScanner::onDeviceDiscovered(QBluetoothDeviceInfo device_info) {
+void DeviceScanner::onDeviceDiscovered(QBluetoothDeviceInfo device_info)
+{
         device_list.push(device_info);
 }
 

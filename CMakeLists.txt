@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.22)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -22,7 +22,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES main.cpp)
 qt_add_resources(SOURCES res/resources.qrc)
 qt_add_executable(main ${SOURCES})
-target_link_libraries(main PRIVATE Qt6::Gui Qt6::Qml Qt6::Bluetooth Qt6::Core soundcore)
+target_link_libraries(main PRIVATE Qt6::Gui Qt6::Qml Qt6::Bluetooth Qt6::Core Qt::Test soundcore)
 
 add_subdirectory(src)
 add_subdirectory(tests)

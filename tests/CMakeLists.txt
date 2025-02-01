@@ -1,14 +1,10 @@
 enable_testing()
 
-add_executable(
-        first_test
-        first_test.cpp
-)
-target_link_libraries(
-        first_test
-        GTest::gtest_main
-        ${PROJECT_NAME}
-)
+find_package(Qt6 REQUIRED COMPONENTS Test Bluetooth)
 
-include(GoogleTest)
-gtest_discover_tests(first_test)
+
+add_executable(test_bluetooth_discovery QBluetoothDeviceDiscoveryAgentTest.cpp)
+
+target_link_libraries(test_bluetooth_discovery PRIVATE Qt6::Test Qt6::Bluetooth)
+
+add_test(NAME BluetoothTest COMMAND test_bluetooth_discovery)
