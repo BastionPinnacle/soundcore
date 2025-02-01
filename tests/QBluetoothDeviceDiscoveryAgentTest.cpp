@@ -17,7 +17,7 @@ void TestBluetoothDiscovery::testDeviceDiscovery() {
     QBluetoothDeviceDiscoveryAgent device_discovery_agent;
     device_discovery_agent.setLowEnergyDiscoveryTimeout(5000);
     QBluetoothServiceDiscoveryAgent service_discovery_agent;
-    QBluetoothSocket* bluetooth_socket;
+    QBluetoothSocket bluetooth_socket;
 
     connect(&device_discovery_agent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered,
             [&service_discovery_agent](QBluetoothDeviceInfo device) {
@@ -29,11 +29,12 @@ void TestBluetoothDiscovery::testDeviceDiscovery() {
             [&bluetooth_socket](QBluetoothServiceInfo service_info) {
         if(service_info.serviceName() == "Serial Port Profile")
         {
-            bluetooth_socket = new QBluetoothSocket(service_info.socketProtocol());
-            connect(bluetooth_socket, &QBluetoothSocket::connected, [](){qDebug() << "CONNECTED"; });
-            bluetooth_socket->connectToService(service_info);
+            bluetooth_socket.setSocketDescriptor(bluetooth_socket.socketDescriptor(),service_info.socketProtocol(), bluetooth_socket.state(), bluetooth_socket.openMode());
+            bluetooth_socket.connectToService(service_info);
         }
     });
+    connect(&bluetooth_socket, &QBluetoothSocket::connected, [](){qDebug() << "CONNECTED"; });
+
 
     // Use QSignalSpy to track signals
     QSignalSpy device_discovered_spy(&device_discovery_agent, &QBluetoothDeviceDiscoveryAgent::deviceDiscovered);
