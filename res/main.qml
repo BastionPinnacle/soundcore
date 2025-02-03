@@ -1,8 +1,8 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
-import soundcore 1.0
-
+import QtQuick.Layouts
+import DeviceList 1.0
 
 ApplicationWindow {
     id: page
@@ -15,10 +15,9 @@ ApplicationWindow {
     visible: true
     width: Screen.width
 
-    DeviceList{
-        id: deviceList
+    DeviceList {
+        id: device_list
     }
-
     Rectangle {
         id: scannerRectangle
 
@@ -51,6 +50,7 @@ ApplicationWindow {
 
                     onClicked: {
                         console.log("Scan for devices clicked");
+                        device_list.refresh();
                     }
                 }
                 RoundButton {
@@ -58,75 +58,42 @@ ApplicationWindow {
 
                     height: parent.height
                     radius: height / 3
-                    text: "Filter for Soundcore"
+                    text: "Stop scannning for Devices "
                     width: parent.width / 2 - parent.spacing / 2
 
                     onClicked: {
-                        console.log("Filter for soundcore clicked");
+                        console.log("Stop scanning for devices clicked");
+                        device_list.stopRefreshing();
                     }
                 }
             }
             ListView {
-                boundsBehavior: Flickable.StopAtBounds
-                boundsMovement: Flickable.StopAtBounds
-                height: (parent.height * 19) / 20
-                orientation: ListView.Vertical
-                width: parent.width
-                clip: true
+                id: listView
 
-                delegate: Rectangle {
-                    color: bgcolor
-                    height: 100
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: controlRow.bottom
+                model: devie_list
+
+                delegate: RowLayout {
+                    height: parent.height
                     width: parent.width
-                }
-                model: ListModel {
-                    ListElement {
-                        bgcolor: 'red'
+
+                    Text {
+                        color: "white"
+                        font.pixelSize: 24
+                        text: name + " (" + address + ")"
                     }
-                    ListElement {
-                        bgcolor: 'yellow'
+                    Item {
+                        Layout.fillWidth: true
                     }
-                    ListElement {
-                        bgcolor: 'white'
-                    }
-                    ListElement {
-                        bgcolor: 'blue'
-                    }
-                    ListElement {
-                        bgcolor: 'green'
-                    }
-                    ListElement {
-                        bgcolor: 'orange'
-                    }
-                    ListElement {
-                        bgcolor: 'black'
-                    }
-                    ListElement {
-                        bgcolor: 'gray'
-                    }
-                    ListElement {
-                        bgcolor: 'red'
-                    }
-                    ListElement {
-                        bgcolor: 'yellow'
-                    }
-                    ListElement {
-                        bgcolor: 'white'
-                    }
-                    ListElement {
-                        bgcolor: 'blue'
-                    }
-                    ListElement {
-                        bgcolor: 'green'
-                    }
-                    ListElement {
-                        bgcolor: 'orange'
-                    }
-                    ListElement {
-                        bgcolor: 'black'
-                    }
-                    ListElement {
-                        bgcolor: 'gray'
+                    ToolButton {
+                        text: "x"
+
+                        onClicked: {
+                            console.log("X CLICKED");
+                        }
                     }
                 }
             }

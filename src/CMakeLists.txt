@@ -3,7 +3,6 @@ file(GLOB HEADERS "${CMAKE_SOURCE_DIR}/include/soundcore/*.hpp")
 add_library(${PROJECT_NAME} ${HEADERS}
         Device.cpp
         DeviceList.cpp
-        DeviceScanner.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)

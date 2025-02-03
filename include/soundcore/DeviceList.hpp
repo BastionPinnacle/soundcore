@@ -1,19 +1,40 @@
 #pragma once
 #include <QObject>
+#include <QAbstractListModel>
 #include <QBluetoothDeviceInfo>
+#include <QBluetoothDeviceDiscoveryAgent>
+#include <QBluetoothAddress>
 #include <iostream>
 #include <mutex>
-#include "soundcore/DeviceScanner.hpp"
 
-class DeviceList : public QObject {
+class DeviceList : public QAbstractListModel {
     Q_OBJECT
 public:
-    DeviceList();
+    enum DeviceRoles {
+        NameRole = Qt::UserRole + 1,
+        AddressRole
+    };
+    DeviceList(QObject* parent=nullptr);
     Q_INVOKABLE void refresh();
     Q_INVOKABLE void stopRefreshing();
-    void push(QBluetoothDeviceInfo device_info);
-    std::vector<QBluetoothDeviceInfo>& getDevices();
+    enum State{
+        Initialized,
+        Refreshing,
+        Refreshed
+    };
+    Q_ENUM(State)
+    Q_INVOKABLE State getState();
+    Q_INVOKABLE std::size_t numberOfDevices();
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = DeviceRoles::NameRole) const override;
+protected:
+    QHash<int, QByteArray> roleNames() const override;
+private slots:
+    void onDeviceDiscovered(QBluetoothDeviceInfo device);
+    //void onDeviceDiscoveryFinished();
+    //void onDeviceDiscoveryStarted();
 private:
-    std::vector<QBluetoothDeviceInfo> devices;
-    DeviceScanner device_scanner;
+    QList<QBluetoothDeviceInfo>  devices;
+    QBluetoothDeviceDiscoveryAgent device_discovery_agent;
+    State state = State::Initialized;
 };
