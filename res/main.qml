@@ -17,7 +17,9 @@ ApplicationWindow {
 
     DeviceList {
         id: device_list
+
     }
+
     Rectangle {
         id: scannerRectangle
 
@@ -45,25 +47,18 @@ ApplicationWindow {
 
                     height: parent.height
                     radius: height / 3
-                    text: "Scan for Devices"
-                    width: parent.width / 2 - parent.spacing / 2
+                    text: device_list.state !== DeviceList.Refreshing ? "Scan for Devices" : "Stop scanning for Devices"
+                    width: parent.width
 
                     onClicked: {
                         console.log("Scan for devices clicked");
-                        device_list.refresh();
-                    }
-                }
-                RoundButton {
-                    id: filterButton
-
-                    height: parent.height
-                    radius: height / 3
-                    text: "Stop scannning for Devices "
-                    width: parent.width / 2 - parent.spacing / 2
-
-                    onClicked: {
-                        console.log("Stop scanning for devices clicked");
-                        device_list.stopRefreshing();
+                        console.log(device_list.state);
+                        if (device_list.state !== DeviceList.Refreshing) {
+                            device_list.refresh();
+                        }
+                        else{
+                            device_list.stopRefreshing()
+                        }
                     }
                 }
             }
@@ -74,7 +69,7 @@ ApplicationWindow {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: controlRow.bottom
-                model: devie_list
+                model: device_list
 
                 delegate: RowLayout {
                     height: parent.height

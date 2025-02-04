@@ -4,23 +4,24 @@
 #include <QQmlEngine>
 #include <QBluetoothDeviceInfo>
 #include <QBluetoothSocket>
+#include <QBluetoothServiceDiscoveryAgent>
 
 class Device : public QObject {
 Q_OBJECT
 public:
-    Device() = delete;
-    Device(const QBluetoothDeviceInfo& device_info);
-
-    Q_INVOKABLE bool connect();
-    Q_INVOKABLE void disconnect();
+    Device(const QBluetoothDeviceInfo& device_info,QObject* parent=nullptr);
+    Q_INVOKABLE void tryToConnect();
+    Q_INVOKABLE void tryToDisconnect();
     Q_PROPERTY(QString name READ name NOTIFY nameChanged)
-    Q_PROPERTY(bool status READ status NOTIFY statusChanged)
     QString name() const;
-    bool status() const;
+    void setup();
+    ~Device();
 signals:
     void nameChanged();
-    void statusChanged();
+    void connected();
+    void disconnected();
 private:
     QBluetoothDeviceInfo device_info;
-    QBluetoothSocket* socket;
+    QBluetoothServiceDiscoveryAgent service_discovery_agent;
+    QBluetoothSocket* socket = nullptr;
 };

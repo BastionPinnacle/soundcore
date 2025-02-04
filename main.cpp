@@ -1,4 +1,4 @@
-#include "soundcore/DeviceList.hpp"
+#include "soundcore/DeviceInfoList.hpp"
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     QQmlApplicationEngine engine;
     QQmlContext *context = engine.rootContext();
 
-    qmlRegisterType<DeviceList>("DeviceList", 1, 0, "DeviceList");
+    qmlRegisterType<DeviceInfoList>("DeviceInfoList", 1, 0, "DeviceInfoList");
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,
                      &app, []() { QCoreApplication::exit(-1); },

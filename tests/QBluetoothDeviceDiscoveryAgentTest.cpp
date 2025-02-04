@@ -4,7 +4,10 @@
 #include <QBluetoothServiceDiscoveryAgent>
 #include <QBluetoothSocket>
 #include <QSignalSpy>
-#include "soundcore/DeviceList.hpp"
+#include <QAbstractItemModelTester>
+#include "soundcore/DeviceInfoList.hpp"
+#include "soundcore/Device.hpp"
+#include "soundcore/App.hpp"
 
 class TestBluetoothDiscovery : public QObject {
 Q_OBJECT
@@ -13,6 +16,8 @@ private slots:
     void testDeviceDiscovery();
     void testStatesInDeviceList();
     void testOnDeviceDiscoveryInDeviceList();
+    void testQAbstractItemModel();
+    void testApp();
 };
 
 void TestBluetoothDiscovery::testDeviceDiscovery() {
@@ -57,6 +62,7 @@ void TestBluetoothDiscovery::testDeviceDiscovery() {
 
     device_discovery_agent.start();
     device_discovery_finished_spy.wait(10000);
+    bluetooth_socket.disconnectFromService();
 
     QVERIFY(device_discovered_spy.count() > 0);
     QVERIFY(device_discovery_finished_spy.count() > 0);
@@ -64,22 +70,44 @@ void TestBluetoothDiscovery::testDeviceDiscovery() {
 }
 
 void TestBluetoothDiscovery::testStatesInDeviceList() {
-    DeviceList device_list;
-    QVERIFY(device_list.getState()==DeviceList::State::Initialized);
+    DeviceInfoList device_list;
+    QVERIFY(device_list.state() == DeviceInfoList::State::Initialized);
     device_list.refresh();
-    QVERIFY(device_list.getState()==DeviceList::State::Refreshing);
+    QVERIFY(device_list.state() == DeviceInfoList::State::Refreshing);
     device_list.stopRefreshing();
-    QVERIFY(device_list.getState()==DeviceList::State::Refreshed);
+    QVERIFY(device_list.state() == DeviceInfoList::State::Refreshed);
     device_list.refresh();
-    QVERIFY(device_list.getState()==DeviceList::State::Refreshing);
+    QVERIFY(device_list.state() == DeviceInfoList::State::Refreshing);
 }
 
 void TestBluetoothDiscovery::testOnDeviceDiscoveryInDeviceList() {
-    DeviceList device_list;
+    DeviceInfoList device_list;
     device_list.refresh();
     sleep(1);
     device_list.stopRefreshing();
     QVERIFY(device_list.numberOfDevices()>0);
+}
+
+void TestBluetoothDiscovery::testQAbstractItemModel() {
+    DeviceInfoList modelToBeTested;
+    modelToBeTested.refresh();
+    sleep(1);
+    modelToBeTested.stopRefreshing();
+    auto tester = new QAbstractItemModelTester(&modelToBeTested);
+}
+
+void TestBluetoothDiscovery::testApp(){
+    App app;
+    DeviceInfoList& device_list = app.deviceList();
+    device_list.refresh();
+    sleep(1);
+    device_list.stopRefreshing();
+    app.selectDevice(0);
+    Device* device = app.device();
+    QSignalSpy device_connected_spy(device, &Device::connected);
+    device->tryToConnect();
+    device_connected_spy.wait(2000);
+    QVERIFY(device_connected_spy.count() > 0);
 }
 
 QTEST_MAIN(TestBluetoothDiscovery)
