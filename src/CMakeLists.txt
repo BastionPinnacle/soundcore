@@ -5,6 +5,7 @@ add_library(${PROJECT_NAME} ${HEADERS}
         DeviceInfoList.cpp
         App.cpp
         connection/DeviceConnector.cpp
+        discovery/DeviceDiscoverer.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
