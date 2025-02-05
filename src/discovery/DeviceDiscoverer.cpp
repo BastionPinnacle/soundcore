@@ -6,12 +6,12 @@ DeviceDiscoverer::State DeviceDiscoverer::state(){
 }
 void DeviceDiscoverer::start(){
     m_state = State::Discovering;
-    device_discovery_agent.start();
+    m_device_discovery_agent.start();
 }
 
 void DeviceDiscoverer::stop(){
     m_state = State::Idle;
-    device_discovery_agent.stop();
+    m_device_discovery_agent.stop();
 }
 
 void DeviceDiscoverer::onDeviceDiscovered(QBluetoothDeviceInfo device_info){

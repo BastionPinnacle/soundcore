@@ -19,9 +19,10 @@ public:
     signals:
     void deviceDiscovered(QBluetoothDeviceInfo device_info);
     void stateChanged(State state);
+    void resetDiscoveredDevices();
 private slots:
     void onDeviceDiscovered(QBluetoothDeviceInfo device_info);
 private:
-    QBluetoothDeviceDiscoveryAgent device_discovery_agent;
-    State m_state;
+    QBluetoothDeviceDiscoveryAgent m_device_discovery_agent;
+    State m_state = State::Idle;
 };

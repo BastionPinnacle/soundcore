@@ -11,15 +11,14 @@ class Device : public QObject {
 public:
     Device(QObject* parent = nullptr);
     void setup();
-    ~Device();
     signals:
     void finalizeConnect();
     void finalizeDisconnect();
 public slots:
     void onInitiateConnect(QBluetoothDeviceInfo device_info);
-    void onInitateDisconnect();
+    void onInitiateDisconnect();
     void onSendMessage(QByteArray message);
 private:
-    QBluetoothServiceDiscoveryAgent service_discovery_agent;
-    QBluetoothSocket* socket = nullptr;
+    QBluetoothServiceDiscoveryAgent m_service_discovery_agent;
+    QBluetoothSocket* m_socket = nullptr;
 };

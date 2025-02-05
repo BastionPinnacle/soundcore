@@ -5,36 +5,36 @@ Device::Device(QObject* parent) : QObject(parent){
 }
 
 void Device::onInitiateConnect(QBluetoothDeviceInfo device_info){
-    service_discovery_agent.setRemoteAddress(device_info.address());
-    service_discovery_agent.start();
+    m_service_discovery_agent.setRemoteAddress(device_info.address());
+    m_service_discovery_agent.start();
 }
 
-void Device::onInitateDisconnect() {
-    socket->disconnectFromService();
+void Device::onInitiateDisconnect() {
+    m_socket->disconnectFromService();
 }
 
 void Device::setup() {
-    QObject::connect(&service_discovery_agent, &QBluetoothServiceDiscoveryAgent::serviceDiscovered,
+    QObject::connect(&m_service_discovery_agent, &QBluetoothServiceDiscoveryAgent::serviceDiscovered,
                      [this](QBluetoothServiceInfo service_info) {
                          if (service_info.serviceName() == "Serial Port Profile") {
-                             if (socket) {
-                                 onInitateDisconnect();
+                             if (m_socket) {
+                                 onInitiateDisconnect();
                              } else {
-                                 socket = new QBluetoothSocket(service_info.socketProtocol());
-                                 QObject::connect(socket, &QBluetoothSocket::connected, [this]() {
-                                     service_discovery_agent.stop(); emit finalizeConnect();
+                                 m_socket = new QBluetoothSocket(service_info.socketProtocol());
+                                 QObject::connect(m_socket, &QBluetoothSocket::connected, [this]() {
+                                     m_service_discovery_agent.stop(); emit finalizeConnect();
                                  });
-                                 QObject::connect(socket, &QBluetoothSocket::disconnected,
+                                 QObject::connect(m_socket, &QBluetoothSocket::disconnected,
                                                   [this]() {
-                                                      delete socket;
-                                                      socket = nullptr; emit finalizeDisconnect();
+                                                      delete m_socket;
+                                                      m_socket = nullptr; emit finalizeDisconnect();
                                                   });
-                                 socket->connectToService(service_info);
+                                 m_socket->connectToService(service_info);
                              }
                          }
                      });
 }
 
 void Device::onSendMessage(QByteArray message) {
-    socket->write(message);
+    m_socket->write(message);
 }

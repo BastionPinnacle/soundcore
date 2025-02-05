@@ -2,6 +2,8 @@
 #include <QAbstractListModel>
 #include <QBluetoothDeviceInfo>
 
+#include "soundcore/discovery/DeviceDiscoverer.hpp"
+
 class DiscoveredDevicesInfoListModel : public QAbstractListModel {
 Q_OBJECT
 public:
@@ -16,9 +18,11 @@ public:
     void connectDevice(QBluetoothDeviceInfo device_info);
 protected:
     QHash<int, QByteArray> roleNames() const override;
-private slots:
+public slots:
     void onDeviceDiscovered(QBluetoothDeviceInfo device);
     void onResetDiscoveredDevices();
+    void onStateChanged(DeviceDiscoverer::State state);
 private:
-    QList<QBluetoothDeviceInfo>  devices;
+    QList<QBluetoothDeviceInfo>  m_devices_list;
+    bool m_can_connect = false;
 };

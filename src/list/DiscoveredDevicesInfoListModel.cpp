@@ -1,24 +1,25 @@
 #include "soundcore/list/DiscoveredDevicesInfoListModel.hpp"
+#include "soundcore/discovery/DeviceDiscoverer.hpp"
 
 #include <QBluetoothAddress>
 
 void DiscoveredDevicesInfoListModel::onDeviceDiscovered(QBluetoothDeviceInfo device) {
-    if (!devices.contains(device)) {
-        int row = devices.size();
+    if (!m_devices_list.contains(device)) {
+        int row = m_devices_list.size();
         beginInsertRows(QModelIndex(), row, row);
-        devices.append(device);
+        m_devices_list.append(device);
         endInsertRows();
     }
 }
 
 int DiscoveredDevicesInfoListModel::rowCount(const QModelIndex &parent) const {
-    return devices.count();
+    return m_devices_list.count();
 }
 
 QVariant DiscoveredDevicesInfoListModel::data(const QModelIndex &index, int role) const {
-    if (index.row() < 0 || index.row() >= devices.count())
+    if (index.row() < 0 || index.row() >= m_devices_list.count())
         return {};
-    const QBluetoothDeviceInfo &device_info = devices[index.row()];
+    const QBluetoothDeviceInfo &device_info = m_devices_list[index.row()];
     switch (role) {
         case NameRole:
             return device_info.name();
@@ -39,15 +40,23 @@ QHash<int, QByteArray> DiscoveredDevicesInfoListModel::roleNames() const {
 
 void DiscoveredDevicesInfoListModel::connectDeviceOnCurrentIndex(int index)
 {
-    if(0<=index && index < devices.count())
+    if(0<=index && index < m_devices_list.count())
     {
-        auto device_info = devices[index];
+        auto device_info = m_devices_list[index];
         emit connectDevice(device_info);
     }
 }
 
 void DiscoveredDevicesInfoListModel::onResetDiscoveredDevices(){
     beginResetModel();
-    devices.clear();
+    m_devices_list.clear();
     endResetModel();
+}
+
+void DiscoveredDevicesInfoListModel::onStateChanged(DeviceDiscoverer::State state) {
+    if(state == DeviceDiscoverer::State::Idle){
+        m_can_connect = true;
+        return;
+    }
+    m_can_connect = false;
 }
