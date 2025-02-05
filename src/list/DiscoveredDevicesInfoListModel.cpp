@@ -1,5 +1,7 @@
 #include "soundcore/list/DiscoveredDevicesInfoListModel.hpp"
 
+#include <QBluetoothAddress>
+
 void DiscoveredDevicesInfoListModel::onDeviceDiscovered(QBluetoothDeviceInfo device) {
     if (!devices.contains(device)) {
         int row = devices.size();

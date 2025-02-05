@@ -18,6 +18,7 @@ public:
     Q_INVOKABLE void stop();
     signals:
     void deviceDiscovered(QBluetoothDeviceInfo device_info);
+    void stateChanged(State state);
 private slots:
     void onDeviceDiscovered(QBluetoothDeviceInfo device_info);
 private:
