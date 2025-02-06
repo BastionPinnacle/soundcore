@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     DeviceDiscoverer deviceDiscoverer;
     DiscoveredDevicesInfoListModel discoveredDevicesInfoListModel;
     DeviceController deviceController;
-    auto soundcoreApp = new App(deviceDiscoverer, discoveredDevicesInfoListModel,deviceController);
+    auto soundcoreApp = new App(deviceDiscoverer, discoveredDevicesInfoListModel, deviceController);
 
     engine.rootContext()->setContextProperty("deviceDiscoverer", &deviceDiscoverer);
     engine.rootContext()->setContextProperty("discoveredDevicesInfoListModel", &discoveredDevicesInfoListModel);

@@ -8,6 +8,7 @@ class DeviceDiscoverer : public QObject
     Q_OBJECT
     Q_PROPERTY(State state MEMBER m_state READ state NOTIFY stateChanged)
 public:
+    DeviceDiscoverer(QObject* parent = nullptr);
     enum State{
         Idle,
         Discovering

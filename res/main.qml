@@ -39,12 +39,51 @@ ApplicationWindow {
             height: 5 * (parent.height / 6)
             visible: true
             width: 5 * (parent.width / 6)
-            Rectangle{
+
+            Rectangle {
                 anchors.fill: parent
                 color: "#17bcef"
                 visible: soundcoreApp.state === DeviceConnector.Disconnected
+
+                Rectangle {
+                    id: discovererRect
+
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    height: parent.height / 4
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 15  // Space between buttons
+
+                        Button {
+                            height: 40
+                            text: "START"
+                            width: 80
+
+                            onClicked: {
+                                console.log("START button clicked");
+                                deviceDiscoverer.start();
+                            }
+                        }
+                        Button {
+                            height: 40
+                            text: "STOP"
+                            width: 80
+
+                            onClicked: {
+                                console.log("STOP button clicked");
+                                deviceDiscoverer.stop();
+                            }
+                        }
+                    }
+                }
                 ListView {
-                    anchors.fill: parent
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: discovererRect.bottom
                     model: discoveredDevicesInfoListModel
 
                     delegate: Item {
@@ -60,15 +99,13 @@ ApplicationWindow {
                             Text {
                                 anchors.centerIn: parent
                                 font.bold: true
-                                text: model.name
+                                text: model.address
                             }
                         }
                     }
                 }
             }
-
         }
-
     }
 }
 

@@ -8,6 +8,7 @@ void DiscoveredDevicesInfoListModel::onDeviceDiscovered(QBluetoothDeviceInfo dev
         int row = m_devices_list.size();
         beginInsertRows(QModelIndex(), row, row);
         m_devices_list.append(device);
+        row = m_devices_list.size();
         endInsertRows();
     }
 }
