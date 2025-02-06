@@ -22,7 +22,6 @@ ApplicationWindow {
 
         anchors.fill: parent
         color: "lightgray"
-        visible: true
 
         Image {
             id: mainImage
@@ -32,6 +31,7 @@ ApplicationWindow {
             visible: soundcoreApp.state === DeviceConnector.Connecting || soundcoreApp.state === DeviceConnector.Disconnecting
         }
 
+        // Disconnected state
         Rectangle {
             id: disconnectedRectangle
 
@@ -51,12 +51,20 @@ ApplicationWindow {
 
                 Row {
                     anchors.centerIn: parent
-                    spacing: 15  // Space between buttons
+                    spacing: 20  // Increased spacing for better button alignment
 
                     Button {
-                        height: 40
+                        font.pixelSize: 18
+                        height: 50
                         text: "START"
-                        width: 80
+                        width: 100
+
+                        background: Rectangle {
+                            border.color: "#2980b9"
+                            border.width: 2
+                            color: "#3498db"
+                            radius: 25
+                        }
 
                         onClicked: {
                             console.log("START button clicked");
@@ -64,9 +72,17 @@ ApplicationWindow {
                         }
                     }
                     Button {
-                        height: 40
+                        font.pixelSize: 18
+                        height: 50
                         text: "STOP"
-                        width: 80
+                        width: 100
+
+                        background: Rectangle {
+                            border.color: "#c0392b"
+                            border.width: 2
+                            color: "#e74c3c"
+                            radius: 25
+                        }
 
                         onClicked: {
                             console.log("STOP button clicked");
@@ -75,6 +91,8 @@ ApplicationWindow {
                     }
                 }
             }
+
+            // ListView for discovered devices
             ListView {
                 id: listView
 
@@ -85,31 +103,37 @@ ApplicationWindow {
                 model: discoveredDevicesInfoListModel
 
                 delegate: Rectangle {
-                    property color clickColor: "lightblue"
-                    property color hoverColor: "lightgray"
-
-                    color: listView.isCurrentItem ? clickColor : (mouseArea.containsMouse ? hoverColor : "white")
-                    height: 50
+                    id: delegateRectangle
+                    property color clickColor: "#A9DFBF"
+                    property color hoverColor: "#F4F6F6"
+                    height: parent.height / 6
                     width: parent.width
 
                     RowLayout {
                         anchors.centerIn: parent
-                        spacing: 5
+                        spacing: 15
 
                         Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.pixelSize: 18
                             text: model.name
-
+                        }
+                        Image {
+                            fillMode: Image.PreserveAspectFit
+                            height: delegateRectangle.height
+                            source: "/images/Q30.png"
                         }
                         Button {
+                            font.pixelSize: 16
                             text: "CONNECT"
-                            width: 200
                             visible: discoveredDevicesInfoListModel.can_connect
+                            width: 150
 
                             background: Rectangle {
                                 border.color: "#2980b9"
                                 border.width: 2
                                 color: "#3498db"
-                                radius: 25  // Half of height for a fully rounded button
+                                radius: 25
                             }
 
                             onClicked: {
@@ -121,6 +145,8 @@ ApplicationWindow {
                 }
             }
         }
+
+        // Connected state
         Rectangle {
             id: connectedRectangle
 
@@ -132,7 +158,7 @@ ApplicationWindow {
 
             Row {
                 anchors.centerIn: parent
-                spacing: 10
+                spacing: 30  // Increase spacing for better layout
 
                 Column {
                     spacing: 10
@@ -141,6 +167,8 @@ ApplicationWindow {
                         model: deviceController.profile_keys
 
                         Button {
+                            font.pixelSize: 18
+                            height: 20
                             text: modelData
                             width: 200
 
@@ -148,7 +176,7 @@ ApplicationWindow {
                                 border.color: "#2980b9"
                                 border.width: 2
                                 color: "#3498db"
-                                radius: 25  // Half of height for a fully rounded button
+                                radius: 25
                             }
 
                             onClicked: {
@@ -159,12 +187,14 @@ ApplicationWindow {
                     }
                 }
                 Column {
-                    spacing: 10
+                    spacing: 20
 
                     Repeater {
                         model: deviceController.mode_keys
 
                         Button {
+                            font.pixelSize: 18
+                            height: 50
                             text: modelData
                             width: 200
 
@@ -172,7 +202,7 @@ ApplicationWindow {
                                 border.color: "#2980b9"
                                 border.width: 2
                                 color: "#3498db"
-                                radius: 25  // Half of height for a fully rounded button
+                                radius: 25
                             }
 
                             onClicked: {

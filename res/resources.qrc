@@ -5,5 +5,13 @@
 
     <qresource prefix="/images">
         <file alias="soundcore.png">soundcore.png</file>
+        <file alias="Liberty4NC.png">Liberty4NC.png</file>
+        <file alias="SleepA20.png">SleepA20.png</file>
+        <file alias="SpaceA40.png">SpaceA40.png</file>
+        <file alias="SpaceOne.png">SpaceOne.png</file>
+        <file alias="SpaceOnePro.png">SpaceOnePro.png</file>
+        <file alias="SpaceQ45.png">SpaceQ45.png</file>
+        <file alias="SportX20.png">SportX20.png</file>
+        <file alias="Q30.png">Q30.png</file>
     </qresource>
 </RCC>
