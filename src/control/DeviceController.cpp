@@ -8,22 +8,6 @@ QStringList DeviceController::modeKeys() const {
     return m_modes.keys();
 }
 
-void DeviceController::onModeKeyChosen(QString mode) {
-    if (m_modes.contains(mode)) {
-        auto message = m_modes[mode];
-        auto hexMessage = message.toUtf8();
-        emit sendMessage(hexMessage);
-    }
-}
-
-void DeviceController::onProfileKeyChosen(QString profile) {
-    if (m_equalizer_profiles.contains(profile)) {
-        auto message = m_equalizer_profiles[profile];
-        auto hexMessage = message.toUtf8();
-        emit sendMessage(hexMessage);
-    }
-}
-
 void DeviceController::onFinalizeDisconnect() {
     m_control_available = false;
 }
@@ -71,3 +55,19 @@ const QHash<QString, QString> DeviceController::m_modes = {
         {"ANC Outdoor",   "08ee00000006810e00000101008d"},
         {"ANC Transport", "08ee00000006810e00000001008c"}
 };
+
+void DeviceController::chooseProfile(QString profile) {
+    if (m_equalizer_profiles.contains(profile)) {
+        QByteArray message = m_equalizer_profiles[profile].toStdString().c_str();
+        auto hex_message = QByteArray::fromHex(message);
+        emit sendMessage(hex_message);
+    }
+}
+
+void DeviceController::chooseMode(QString mode) {
+    if (m_modes.contains(mode)) {
+        QByteArray message = m_modes[mode].toStdString().c_str();
+        auto hex_message = QByteArray::fromHex(message);
+        emit sendMessage(hex_message);
+    }
+}

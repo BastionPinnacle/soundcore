@@ -11,6 +11,8 @@ public:
     Q_PROPERTY(QStringList mode_keys READ modeKeys CONSTANT)
     Q_PROPERTY(bool control_available MEMBER m_control_available READ controlAvailable NOTIFY controlAvailableChanged)
     Q_INVOKABLE void disconnectDevice();
+    Q_INVOKABLE void chooseProfile(QString profile);
+    Q_INVOKABLE void chooseMode(QString profile);
     QStringList profileKeys() const;
     QStringList modeKeys() const;
     bool controlAvailable() const;
@@ -21,9 +23,6 @@ public:
 public slots:
     void onFinalizeConnect();
     void onFinalizeDisconnect();
-private slots:
-    void onProfileKeyChosen(QString profile);
-    void onModeKeyChosen(QString mode);
 private:
     const static QHash<QString, QString> m_equalizer_profiles;
     const static QHash<QString, QString> m_modes;

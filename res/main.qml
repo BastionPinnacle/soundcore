@@ -29,8 +29,9 @@ ApplicationWindow {
 
             anchors.fill: parent
             source: "/images/soundcore.png"
-            visible: soundcoreApp.state === DeviceConnector.Connected
+            visible: soundcoreApp.state === DeviceConnector.Connecting || soundcoreApp.state === DeviceConnector.Disconnecting
         }
+
         Rectangle {
             id: disconnectedRectangle
 
@@ -97,10 +98,19 @@ ApplicationWindow {
 
                         Text {
                             text: model.name
+
                         }
                         Button {
                             text: "CONNECT"
+                            width: 200
                             visible: discoveredDevicesInfoListModel.can_connect
+
+                            background: Rectangle {
+                                border.color: "#2980b9"
+                                border.width: 2
+                                color: "#3498db"
+                                radius: 25  // Half of height for a fully rounded button
+                            }
 
                             onClicked: {
                                 console.log(index);
@@ -108,20 +118,69 @@ ApplicationWindow {
                             }
                         }
                     }
-                    /*
-                    MouseArea {
-                        id: mouseArea
+                }
+            }
+        }
+        Rectangle {
+            id: connectedRectangle
 
-                        anchors.fill: parent
+            anchors.centerIn: parent
+            color: "#17bcef"
+            height: 5 * (parent.height / 6)
+            visible: soundcoreApp.state === DeviceConnector.Connected
+            width: 5 * (parent.width / 6)
 
-                        onClicked: {
-                            listView.currentIndex = index;
-                        }
-                        onReleased: {
-                            parent.color = listView.isCurrentItem ? clickColor : (mouseArea.containsMouse ? hoverColor : "white");
+            Row {
+                anchors.centerIn: parent
+                spacing: 10
+
+                Column {
+                    spacing: 10
+
+                    Repeater {
+                        model: deviceController.profile_keys
+
+                        Button {
+                            text: modelData
+                            width: 200
+
+                            background: Rectangle {
+                                border.color: "#2980b9"
+                                border.width: 2
+                                color: "#3498db"
+                                radius: 25  // Half of height for a fully rounded button
+                            }
+
+                            onClicked: {
+                                console.log("Clicked:", text);
+                                deviceController.chooseProfile(text);
+                            }
                         }
                     }
-                     */
+                }
+                Column {
+                    spacing: 10
+
+                    Repeater {
+                        model: deviceController.mode_keys
+
+                        Button {
+                            text: modelData
+                            width: 200
+
+                            background: Rectangle {
+                                border.color: "#2980b9"
+                                border.width: 2
+                                color: "#3498db"
+                                radius: 25  // Half of height for a fully rounded button
+                            }
+
+                            onClicked: {
+                                console.log("Clicked:", text);
+                                deviceController.chooseMode(text);
+                            }
+                        }
+                    }
                 }
             }
         }
