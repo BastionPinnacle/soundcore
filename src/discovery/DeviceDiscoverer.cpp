@@ -5,6 +5,10 @@ DeviceDiscoverer::State DeviceDiscoverer::state() {
 }
 
 void DeviceDiscoverer::start() {
+    if(m_device_discovery_agent.isActive())
+    {
+        m_device_discovery_agent.stop();
+    }
     emit resetDiscoveredDevices();
     m_state = State::Discovering;
     m_device_discovery_agent.start();
