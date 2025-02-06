@@ -11,8 +11,9 @@ App::App(DeviceDiscoverer &new_device_discoverer,
             &DiscoveredDevicesInfoListModel::onDeviceDiscovered);
     connect(&m_device_discoverer, &DeviceDiscoverer::resetDiscoveredDevices, &m_discovered_devices_info_list_model,
             &DiscoveredDevicesInfoListModel::onResetDiscoveredDevices);
-    connect(&m_device_discoverer, &DeviceDiscoverer::stateChanged, &m_discovered_devices_info_list_model,
-            &DiscoveredDevicesInfoListModel::onStateChanged);
+    // connection between DiscoveredDevicesInfoListModel and DeviceDiscoverer
+    connect(&m_discovered_devices_info_list_model, &DiscoveredDevicesInfoListModel::connectDevice, &m_device_discoverer,
+            &DeviceDiscoverer::onConnectDevice);
     // connection between DiscoveredDevicesInfoListModel and DeviceConnector
     connect(&m_discovered_devices_info_list_model, &DiscoveredDevicesInfoListModel::connectDevice, &m_device_connector,
             &DeviceConnector::onInitiateConnect);
@@ -32,6 +33,7 @@ App::App(DeviceDiscoverer &new_device_discoverer,
             &DeviceConnector::onInitiateDisconnect);
     // connection between DeviceConnector and App
     connect(&m_device_connector, &DeviceConnector::stateChanged, this, &App::onStateChanged);
+
 }
 
 DeviceConnector::State App::state() {

@@ -32,3 +32,13 @@ void DeviceDiscoverer::onDeviceDiscovered(QBluetoothDeviceInfo device_info) {
     qDebug() << "Discovered Device";
     emit deviceDiscovered(device_info);
 }
+
+void DeviceDiscoverer::onConnectDevice(QBluetoothDeviceInfo device_info) {
+    Q_UNUSED(device_info)
+    if(m_device_discovery_agent.isActive())
+    {
+        m_device_discovery_agent.stop();
+        m_state = State::Idle;
+        emit stateChanged(m_state);
+    }
+}

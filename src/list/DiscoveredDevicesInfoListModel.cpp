@@ -41,7 +41,7 @@ QHash<int, QByteArray> DiscoveredDevicesInfoListModel::roleNames() const {
 
 void DiscoveredDevicesInfoListModel::connectDeviceOnCurrentIndex(int index)
 {
-    if(m_can_connect && 0<=index && index < m_devices_list.size())
+    if(0<=index && index < m_devices_list.size())
     {
         auto device_info = m_devices_list[index];
         emit connectDevice(device_info);
@@ -52,13 +52,4 @@ void DiscoveredDevicesInfoListModel::onResetDiscoveredDevices(){
     beginResetModel();
     m_devices_list.clear();
     endResetModel();
-}
-
-void DiscoveredDevicesInfoListModel::onStateChanged(DeviceDiscoverer::State state) {
-    m_can_connect = (state == DeviceDiscoverer::State::Idle) ? true : false;
-    emit canConnectChanged(m_can_connect);
-}
-
-bool DiscoveredDevicesInfoListModel::canConnect() const {
-    return m_can_connect;
 }

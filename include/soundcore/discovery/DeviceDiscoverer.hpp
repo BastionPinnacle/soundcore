@@ -21,6 +21,8 @@ public:
     void deviceDiscovered(QBluetoothDeviceInfo device_info);
     void stateChanged(State state);
     void resetDiscoveredDevices();
+public slots:
+    void onConnectDevice(QBluetoothDeviceInfo device_info);
 private slots:
     void onDeviceDiscovered(QBluetoothDeviceInfo device_info);
 private:

@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import App 1.0
 import DeviceConnector 1.0
 import DiscoveredDevicesInfoListModel 1.0
+import DeviceDiscoverer 1.0
 
 ApplicationWindow {
     id: page
@@ -31,7 +32,6 @@ ApplicationWindow {
             visible: soundcoreApp.state === DeviceConnector.Connecting || soundcoreApp.state === DeviceConnector.Disconnecting
         }
 
-        // Disconnected state
         Rectangle {
             id: disconnectedRectangle
 
@@ -56,7 +56,7 @@ ApplicationWindow {
                     Button {
                         font.pixelSize: 18
                         height: 50
-                        text: "START"
+                        text: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START" : "STOP"
                         width: 100
 
                         background: Rectangle {
@@ -67,26 +67,11 @@ ApplicationWindow {
                         }
 
                         onClicked: {
-                            console.log("START button clicked");
-                            deviceDiscoverer.start();
-                        }
-                    }
-                    Button {
-                        font.pixelSize: 18
-                        height: 50
-                        text: "STOP"
-                        width: 100
-
-                        background: Rectangle {
-                            border.color: "#c0392b"
-                            border.width: 2
-                            color: "#e74c3c"
-                            radius: 25
-                        }
-
-                        onClicked: {
-                            console.log("STOP button clicked");
-                            deviceDiscoverer.stop();
+                            if (deviceDiscoverer.state === DeviceDiscoverer.Idle) {
+                                deviceDiscoverer.start();
+                            } else {
+                                deviceDiscoverer.stop();
+                            }
                         }
                     }
                 }
@@ -104,8 +89,10 @@ ApplicationWindow {
 
                 delegate: Rectangle {
                     id: delegateRectangle
+
                     property color clickColor: "#A9DFBF"
                     property color hoverColor: "#F4F6F6"
+
                     height: parent.height / 6
                     width: parent.width
 
@@ -117,11 +104,6 @@ ApplicationWindow {
                             anchors.verticalCenter: parent.verticalCenter
                             font.pixelSize: 18
                             text: model.name
-                        }
-                        Image {
-                            fillMode: Image.PreserveAspectFit
-                            height: delegateRectangle.height
-                            source: "/images/Q30.png"
                         }
                         Button {
                             font.pixelSize: 16
