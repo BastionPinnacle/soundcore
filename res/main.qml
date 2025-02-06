@@ -79,32 +79,40 @@ ApplicationWindow {
                         }
                     }
                 }
+                ListModel {
+                    id: contactsModel
+                    ListElement {
+                        name: "Bill Smith"
+                        position: "Engineer"
+                    }
+                    ListElement {
+                        name: "John Brown"
+                        position: "Engineer"
+                    }
+                    ListElement {
+                        name: "Sam Wise"
+                        position: "Manager"
+                    }
+                }
                 ListView {
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.top: discovererRect.bottom
-                    model: discoveredDevicesInfoListModel
-
-                    delegate: Item {
-                        height: 50
-                        width: parent.width
-
-                        Rectangle {
-                            border.color: "black"
-                            color: "lightblue"
-                            height: 40
-                            width: parent.width
-
-                            Text {
-                                anchors.centerIn: parent
-                                font.bold: true
-                                text: model.address
-                            }
-                        }
+                    model: contactsModel
+                    delegate: Text{
+                        text: model.name
                     }
                 }
             }
+        }
+    }
+    Component.onCompleted: {
+        console.log("Model type:", typeof discoveredDevicesInfoListModel);
+        if (typeof discoveredDevicesInfoListModel === "undefined") {
+            console.warn("discoveredDevicesInfoListModel is not defined!");
+        } else {
+            console.log("discoveredDevicesInfoListModel is available.");
         }
     }
 }
