@@ -5,14 +5,17 @@ DeviceDiscoverer::State DeviceDiscoverer::state() {
 }
 
 void DeviceDiscoverer::start() {
+    emit resetDiscoveredDevices();
     m_state = State::Discovering;
     m_device_discovery_agent.start();
+    emit stateChanged(m_state);
     qDebug() << "DeviceDiscoverer::start() called";
 }
 
 void DeviceDiscoverer::stop() {
     m_state = State::Idle;
     m_device_discovery_agent.stop();
+    emit stateChanged(m_state);
     qDebug() << "DeviceDiscoverer::stop() called";
 }
 

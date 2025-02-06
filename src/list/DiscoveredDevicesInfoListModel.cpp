@@ -13,21 +13,22 @@ void DiscoveredDevicesInfoListModel::onDeviceDiscovered(QBluetoothDeviceInfo dev
 }
 
 int DiscoveredDevicesInfoListModel::rowCount(const QModelIndex &parent) const {
+    Q_UNUSED(parent);
     return m_devices_list.size();
 }
 
 QVariant DiscoveredDevicesInfoListModel::data(const QModelIndex &index, int role) const {
-    if (!index.isValid()) {
+    if (index.row() < 0 || index.row() >= m_devices_list.count())
         return {};
-    }
-    auto item = m_devices_list.at(index.row());
+    const QBluetoothDeviceInfo &device_info = m_devices_list[index.row()];
     switch (role) {
         case NameRole:
-            return QVariant(item.name());
+            return device_info.name();
         case AddressRole:
-            return QVariant(item.address().toString());
+            return device_info.address().toString();
+        default:
+            return {};
     }
-    return {};
 }
 
 QHash<int, QByteArray> DiscoveredDevicesInfoListModel::roleNames() const {

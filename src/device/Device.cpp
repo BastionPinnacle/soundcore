@@ -29,7 +29,9 @@ void Device::setup() {
                                                       delete m_socket;
                                                       m_socket = nullptr; emit finalizeDisconnect();
                                                   });
+                                 //QObject::connect(m_socket, &QBluetoothSocket::errorOccurred,  )
                                  m_socket->connectToService(service_info);
+
                              }
                          }
                      });

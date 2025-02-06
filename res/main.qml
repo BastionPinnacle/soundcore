@@ -4,6 +4,7 @@ import QtQuick.Window 2.15
 import QtQuick.Layouts
 import App 1.0
 import DeviceConnector 1.0
+import DiscoveredDevicesInfoListModel 1.0
 
 ApplicationWindow {
     id: page
@@ -19,10 +20,7 @@ ApplicationWindow {
     Rectangle {
         id: deviceRectangle
 
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
+        anchors.fill: parent
         color: "lightgray"
         visible: true
 
@@ -34,86 +32,98 @@ ApplicationWindow {
             visible: soundcoreApp.state === DeviceConnector.Connected
         }
         Rectangle {
+            id: disconnectedRectangle
+
             anchors.centerIn: parent
             color: "#17bcef"
             height: 5 * (parent.height / 6)
-            visible: true
+            visible: soundcoreApp.state === DeviceConnector.Disconnected
             width: 5 * (parent.width / 6)
 
             Rectangle {
-                anchors.fill: parent
-                color: "#17bcef"
-                visible: soundcoreApp.state === DeviceConnector.Disconnected
+                id: discovererRect
 
-                Rectangle {
-                    id: discovererRect
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                height: parent.height / 4
 
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    height: parent.height / 4
+                Row {
+                    anchors.centerIn: parent
+                    spacing: 15  // Space between buttons
 
-                    Row {
+                    Button {
+                        height: 40
+                        text: "START"
+                        width: 80
+
+                        onClicked: {
+                            console.log("START button clicked");
+                            deviceDiscoverer.start();
+                        }
+                    }
+                    Button {
+                        height: 40
+                        text: "STOP"
+                        width: 80
+
+                        onClicked: {
+                            console.log("STOP button clicked");
+                            deviceDiscoverer.stop();
+                        }
+                    }
+                }
+            }
+            ListView {
+                id: listView
+
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: discovererRect.bottom
+                model: discoveredDevicesInfoListModel
+
+                delegate: Rectangle {
+                    property color clickColor: "lightblue"
+                    property color hoverColor: "lightgray"
+
+                    color: listView.isCurrentItem ? clickColor : (mouseArea.containsMouse ? hoverColor : "white")
+                    height: 50
+                    width: parent.width
+
+                    RowLayout {
                         anchors.centerIn: parent
-                        spacing: 15  // Space between buttons
+                        spacing: 5
 
-                        Button {
-                            height: 40
-                            text: "START"
-                            width: 80
-
-                            onClicked: {
-                                console.log("START button clicked");
-                                deviceDiscoverer.start();
-                            }
+                        Text {
+                            text: model.name
                         }
                         Button {
-                            height: 40
-                            text: "STOP"
-                            width: 80
+                            text: "CONNECT"
+                            visible: discoveredDevicesInfoListModel.can_connect
 
                             onClicked: {
-                                console.log("STOP button clicked");
-                                deviceDiscoverer.stop();
+                                console.log(index);
+                                discoveredDevicesInfoListModel.connectDeviceOnCurrentIndex(index);
                             }
                         }
                     }
-                }
-                ListModel {
-                    id: contactsModel
-                    ListElement {
-                        name: "Bill Smith"
-                        position: "Engineer"
+                    /*
+                    MouseArea {
+                        id: mouseArea
+
+                        anchors.fill: parent
+
+                        onClicked: {
+                            listView.currentIndex = index;
+                        }
+                        onReleased: {
+                            parent.color = listView.isCurrentItem ? clickColor : (mouseArea.containsMouse ? hoverColor : "white");
+                        }
                     }
-                    ListElement {
-                        name: "John Brown"
-                        position: "Engineer"
-                    }
-                    ListElement {
-                        name: "Sam Wise"
-                        position: "Manager"
-                    }
-                }
-                ListView {
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.top: discovererRect.bottom
-                    model: contactsModel
-                    delegate: Text{
-                        text: model.name
-                    }
+                     */
                 }
             }
         }
     }
-    Component.onCompleted: {
-        console.log("Model type:", typeof discoveredDevicesInfoListModel);
-        if (typeof discoveredDevicesInfoListModel === "undefined") {
-            console.warn("discoveredDevicesInfoListModel is not defined!");
-        } else {
-            console.log("discoveredDevicesInfoListModel is available.");
-        }
-    }
 }
-

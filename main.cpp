@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
     engine.rootContext()->setContextProperty("deviceDiscoverer", &deviceDiscoverer);
     engine.rootContext()->setContextProperty("discoveredDevicesInfoListModel", &discoveredDevicesInfoListModel);
-    engine.rootContext()->setContextProperty("discoveredDevicesInfoListModel", &deviceController);
+    engine.rootContext()->setContextProperty("deviceController", &deviceController);
     engine.rootContext()->setContextProperty("soundcoreApp", soundcoreApp);
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed,

@@ -20,7 +20,7 @@ public:
     void initiateConnect(QBluetoothDeviceInfo device_info);
     void initiateDisconnect();
 public slots:
-    void onInitiateConnect();
+    void onInitiateConnect(QBluetoothDeviceInfo device_info);
     void onFinalizeConnect();
     void onInitiateDisconnect();
     void onFinalizeDisconnect();

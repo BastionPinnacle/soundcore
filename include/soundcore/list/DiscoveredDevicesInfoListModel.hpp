@@ -13,7 +13,8 @@ public:
     };
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = DeviceRoles::NameRole) const override;
-    void connectDeviceOnCurrentIndex(int index);
+
+    Q_INVOKABLE void connectDeviceOnCurrentIndex(int index);
     Q_PROPERTY(bool can_connect MEMBER m_can_connect READ canConnect NOTIFY canConnectChanged)
     bool canConnect() const;
     signals:

@@ -30,6 +30,8 @@ App::App(DeviceDiscoverer &new_device_discoverer,
     // connection between DeviceController and DeviceConnector
     connect(&m_device_controller, &DeviceController::initiateDisconnect, &m_device_connector,
             &DeviceConnector::onInitiateDisconnect);
+    // connection between DeviceConnector and App
+    connect(&m_device_connector, &DeviceConnector::stateChanged, this, &App::onStateChanged);
 }
 
 DeviceConnector::State App::state() {
