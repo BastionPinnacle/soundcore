@@ -1,3 +1,4 @@
+#include <QMap>
 #include "soundcore/control/DeviceController.hpp"
 
 QStringList DeviceController::profileKeys() const {
@@ -24,7 +25,7 @@ void DeviceController::disconnectDevice() {
     emit initiateDisconnect();
 }
 
-const QHash<QString, QString> DeviceController::m_equalizer_profiles = {
+const QMap<QString, QString> DeviceController::m_equalizer_profiles = {
         {"SoundCore Signature", "08ee00000002811400000078787878787878784d"},
         {"Acoustic",            "08ee000000028114000100a0828c8ca0a0a08c34"},
         {"Bass Booster",        "08ee000000028114000200a0968278787878789f"},
@@ -48,7 +49,7 @@ const QHash<QString, QString> DeviceController::m_equalizer_profiles = {
         {"Treble Booster",      "08ee0000000281140014006464646e828c8ca075"},
         {"Treble Reducer",      "08ee000000028114001500787878645a50503ca4"}};
 
-const QHash<QString, QString> DeviceController::m_modes = {
+const QMap<QString, QString> DeviceController::m_modes = {
         {"Transparency",  "08ee00000006810e00010101008e"},
         {"Normal",        "08ee00000006810e00020101008f"},
         {"ANC Indoor",    "08ee00000006810e00000201008e"},

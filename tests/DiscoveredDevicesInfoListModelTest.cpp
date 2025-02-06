@@ -7,34 +7,17 @@ Q_OBJECT
 
 private slots:
 
-    void testOnStateChangedWithCanConnectBehaviour();
-
     void testAddingItem();
 
     void testResetDiscoveredDevices();
 
     void testQAbstractListModel();
 
-    void testChoosingCurrentItemInIdleState();
-
-    void testChoosingCurrentItemInDiscoveringState();
+    void testChoosingCurrentItem();
 
     void testGettingName();
 
 };
-
-
-void DiscoveredDevicesInfoListModelTest::testOnStateChangedWithCanConnectBehaviour() {
-    DiscoveredDevicesInfoListModel device_info_list;
-    QSignalSpy can_connect_changed_spy(&device_info_list, &DiscoveredDevicesInfoListModel::canConnectChanged);
-    QVERIFY(can_connect_changed_spy.count() == 0);
-    device_info_list.onStateChanged(DeviceDiscoverer::State::Discovering);
-    can_connect_changed_spy.wait(100);
-    QVERIFY(can_connect_changed_spy.count() == 1);
-    device_info_list.onStateChanged(DeviceDiscoverer::State::Idle);
-    can_connect_changed_spy.wait(100);
-    QVERIFY(can_connect_changed_spy.count() == 2);
-}
 
 void DiscoveredDevicesInfoListModelTest::testAddingItem() {
     DiscoveredDevicesInfoListModel device_info_list;
@@ -63,27 +46,16 @@ void DiscoveredDevicesInfoListModelTest::testQAbstractListModel() {
     QAbstractItemModelTester tester(&device_info_list);
 }
 
-void DiscoveredDevicesInfoListModelTest::testChoosingCurrentItemInDiscoveringState() {
-    DiscoveredDevicesInfoListModel device_info_list;
-    QBluetoothDeviceInfo device_info;
-    QSignalSpy connect_device_spy(&device_info_list, &DiscoveredDevicesInfoListModel::connectDevice);
-    device_info_list.onStateChanged(DeviceDiscoverer::State::Discovering);
-    device_info_list.onDeviceDiscovered(device_info);
-    device_info_list.connectDeviceOnCurrentIndex(0);
-    connect_device_spy.wait(100);
-    QVERIFY(connect_device_spy.count() == 0);
-}
-
-void DiscoveredDevicesInfoListModelTest::testChoosingCurrentItemInIdleState() {
+void DiscoveredDevicesInfoListModelTest::testChoosingCurrentItem() {
     DiscoveredDevicesInfoListModel device_info_list;
     QBluetoothDeviceInfo device_info;
     QSignalSpy connect_device_spy(&device_info_list, &DiscoveredDevicesInfoListModel::connectDevice);
     device_info_list.onDeviceDiscovered(device_info);
-    device_info_list.onStateChanged(DeviceDiscoverer::State::Idle);
     device_info_list.connectDeviceOnCurrentIndex(0);
     connect_device_spy.wait(100);
     QVERIFY(connect_device_spy.count() == 1);
 }
+
 
 void DiscoveredDevicesInfoListModelTest::testGettingName() {
     DiscoveredDevicesInfoListModel device_info_list;
@@ -91,8 +63,8 @@ void DiscoveredDevicesInfoListModelTest::testGettingName() {
     QString custom_name{"Custom name"};
     device_info.setName(custom_name);
     device_info_list.onDeviceDiscovered(device_info);
-    auto index = device_info_list.index(0,0);
-    auto element = device_info_list.data(index,DiscoveredDevicesInfoListModel::DeviceRoles::NameRole);
+    auto index = device_info_list.index(0, 0);
+    auto element = device_info_list.data(index, DiscoveredDevicesInfoListModel::DeviceRoles::NameRole);
     QVERIFY(element.toString() == custom_name);
 }
 

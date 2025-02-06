@@ -1,7 +1,7 @@
 #pragma once
 
 #include<QObject>
-#include<QHash>
+#include<QMap>
 
 class DeviceController : public QObject
 {
@@ -24,8 +24,8 @@ public slots:
     void onFinalizeConnect();
     void onFinalizeDisconnect();
 private:
-    const static QHash<QString, QString> m_equalizer_profiles;
-    const static QHash<QString, QString> m_modes;
+    const static QMap<QString, QString> m_equalizer_profiles;
+    const static QMap<QString, QString> m_modes;
     bool m_control_available = false;
 };
 
