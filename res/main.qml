@@ -194,6 +194,23 @@ ApplicationWindow {
                         }
                     }
                 }
+                Button {
+                    font.pixelSize: 18
+                    height: 50
+                    text: "Disconnect"
+                    width: 200
+
+                    background: Rectangle {
+                        border.color: "#2980b9"
+                        border.width: 2
+                        color: "#3498db"
+                        radius: 25
+                    }
+
+                    onClicked: {
+                        deviceController.disconnectDevice()
+                    }
+                }
             }
         }
     }
