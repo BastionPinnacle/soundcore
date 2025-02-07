@@ -14,31 +14,40 @@ Button {
     property string buttonText: ""
     property alias rectangle: rectangle
     property bool showIcon: true
+    property string backgroundColor: ""
+
+    rectangle.gradient: if (buttonColor == "grey" && Colors.currentTheme == Colors.dark) {
+        Colors.darkButtonGradient;
+    } else if (buttonColor == "grey" && Colors.currentTheme == Colors.light) {
+        Colors.lightButtonGradient;
+    } else {
+        Colors.greenButtonGradient;
+    }
 
     contentItem: Rectangle {
-        id: rectangle
-
         anchors.fill: parent
-        border.color: Colors.border
-        border.width: 1
-        radius: 10
+        color: backgroundColor
 
-        Row {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.verticalCenter: parent.verticalCenter
+        Rectangle {
+            id: rectangle
 
-            Text {
-                color: (buttonColor == "green") ? Colors.dark.textColor : Colors.currentTheme.textColor
-                font.pixelSize: 18
-                font.weight: 700
-                rightPadding: 8
-                text: buttonText
-            }
-            Image {
-                id: icon
+            anchors.fill: parent
+            border.color: Colors.border
+            border.width: 1
+            clip: true
+            radius: 10
 
-                source: (Colors.currentTheme == Colors.dark) ? "./images/icons/keyboard_backspace_white_right.svg" : "./images/icons/keyboard_backspace_black_right.svg"
-                visible: showIcon
+            Row {
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                Text {
+                    color: (buttonColor == "green") ? Colors.dark.textColor : Colors.currentTheme.textColor
+                    font.pixelSize: 18
+                    font.weight: 700
+                    rightPadding: 8
+                    text: buttonText
+                }
             }
         }
     }
@@ -58,14 +67,4 @@ Button {
             properties: "scale"
         }
     }
-
-    rectangle.gradient: if (buttonColor == "grey"
-                                && Colors.currentTheme == Colors.dark) {
-                            Colors.darkButtonGradient
-                        } else if (buttonColor == "grey"
-                                   && Colors.currentTheme == Colors.light) {
-                            Colors.lightButtonGradient
-                        } else {
-                            Colors.greenButtonGradient
-                        }
 }

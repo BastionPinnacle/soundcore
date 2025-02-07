@@ -7,6 +7,7 @@ import DeviceConnector 1.0
 import DiscoveredDevicesInfoListModel 1.0
 import DeviceDiscoverer 1.0
 import Basic 1.0
+import Colors 1.0
 
 ApplicationWindow {
     id: page
@@ -23,7 +24,7 @@ ApplicationWindow {
         id: deviceRectangle
 
         anchors.fill: parent
-        color: "lightgray"
+        color: Colors.currentTheme.background
 
         Image {
             id: mainImage
@@ -32,7 +33,6 @@ ApplicationWindow {
             source: "/images/soundcore.png"
             visible: soundcoreApp.state === DeviceConnector.Connecting || soundcoreApp.state === DeviceConnector.Disconnecting
         }
-
         Rectangle {
             id: disconnectedRectangle
 
@@ -55,20 +55,8 @@ ApplicationWindow {
                     spacing: 20  // Increased spacing for better button alignment
 
                     BasicButton {
-                        /*
-                        font.pixelSize: 18
-                        height: 50
-                        text: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START" : "STOP"
-                        width: 100
+                        buttonText: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START" : "STOP"
 
-                        background: Rectangle {
-                            border.color: "#2980b9"
-                            border.width: 2
-                            color: "#3498db"
-                            radius: 25
-                        }
-                         */
-                        text: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START" : "STOP"
                         onClicked: {
                             if (deviceDiscoverer.state === DeviceDiscoverer.Idle) {
                                 deviceDiscoverer.start();
@@ -108,18 +96,9 @@ ApplicationWindow {
                             font.pixelSize: 18
                             text: model.name
                         }
-                        Button {
-                            font.pixelSize: 16
-                            text: "CONNECT"
-                            visible: discoveredDevicesInfoListModel.can_connect
-                            width: 150
+                        BasicButton {
+                            buttonText: "CONNECT"
 
-                            background: Rectangle {
-                                border.color: "#2980b9"
-                                border.width: 2
-                                color: "#3498db"
-                                radius: 25
-                            }
 
                             onClicked: {
                                 console.log(index);
@@ -136,85 +115,80 @@ ApplicationWindow {
             id: connectedRectangle
 
             anchors.centerIn: parent
-            color: "#17bcef"
+            color: Colors.currentTheme.background
             height: 5 * (parent.height / 6)
             visible: soundcoreApp.state === DeviceConnector.Connected
             width: 5 * (parent.width / 6)
 
-            Row {
-                anchors.centerIn: parent
-                spacing: 30  // Increase spacing for better layout
+            GridView {
+                id: gridView
 
-                Column {
-                    spacing: 10
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.horizontalCenter
+                anchors.top: parent.top
+                cellHeight: height / 11
+                cellWidth: width / 2
+                model: deviceController.profile_keys
 
-                    Repeater {
-                        model: deviceController.profile_keys
+                delegate: Item {
+                    height: gridView.cellHeight
+                    width: gridView.cellWidth
 
-                        Button {
-                            font.pixelSize: 18
-                            height: 20
-                            text: modelData
-                            width: 200
+                    BasicButton {
+                        id: btn
+                        backgroundColor: Colors.currentTheme.background
+                        anchors.centerIn: parent
+                        buttonText: modelData
+                        height: parent.height
+                        width: parent.width
 
-                            background: Rectangle {
-                                border.color: "#2980b9"
-                                border.width: 2
-                                color: "#3498db"
-                                radius: 25
-                            }
-
-                            onClicked: {
-                                console.log("Clicked:", text);
-                                deviceController.chooseProfile(text);
-                            }
+                        onClicked: {
+                            console.log("Clicked:", buttonText);
+                            deviceController.chooseProfile(buttonText);
                         }
                     }
                 }
-                Column {
-                    spacing: 20
 
-                    Repeater {
-                        model: deviceController.mode_keys
+                Component.onCompleted: console.log(deviceController.profile_keys.length)
+            }
+            Column {
+                id: modeColumn
 
-                        Button {
-                            font.pixelSize: 18
-                            height: 50
-                            text: modelData
-                            width: 200
+                anchors.bottom: parent.bottom
+                anchors.left: gridView.right
+                anchors.top: parent.top
+                width: parent.width / 4
 
-                            background: Rectangle {
-                                border.color: "#2980b9"
-                                border.width: 2
-                                color: "#3498db"
-                                radius: 25
-                            }
+                Repeater {
+                    anchors.centerIn: parent
+                    model: deviceController.mode_keys
 
-                            onClicked: {
-                                console.log("Clicked:", text);
-                                deviceController.chooseMode(text);
-                            }
+                    BasicButton {
+                        buttonText: modelData
+                        backgroundColor: Colors.currentTheme.background
+                        height: modeColumn.height / 5
+                        width: modeColumn.width
+
+                        onClicked: {
+                            console.log("Clicked:", buttonText);
+                            deviceController.chooseMode(buttonText);
                         }
-                    }
-                }
-                Button {
-                    font.pixelSize: 18
-                    height: 50
-                    text: "Disconnect"
-                    width: 200
-
-                    background: Rectangle {
-                        border.color: "#2980b9"
-                        border.width: 2
-                        color: "#3498db"
-                        radius: 25
-                    }
-
-                    onClicked: {
-                        deviceController.disconnectDevice()
                     }
                 }
             }
+            BasicButton {
+                buttonText: "DISCONNECT"
+                backgroundColor: Colors.currentTheme.background
+                anchors.left: modeColumn.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                onClicked: {
+                    deviceController.disconnectDevice();
+                }
+            }
+
         }
     }
 }
