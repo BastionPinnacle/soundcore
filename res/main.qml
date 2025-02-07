@@ -6,6 +6,7 @@ import App 1.0
 import DeviceConnector 1.0
 import DiscoveredDevicesInfoListModel 1.0
 import DeviceDiscoverer 1.0
+import Basic 1.0
 
 ApplicationWindow {
     id: page
@@ -53,7 +54,8 @@ ApplicationWindow {
                     anchors.centerIn: parent
                     spacing: 20  // Increased spacing for better button alignment
 
-                    Button {
+                    BasicButton {
+                        /*
                         font.pixelSize: 18
                         height: 50
                         text: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START" : "STOP"
@@ -65,7 +67,8 @@ ApplicationWindow {
                             color: "#3498db"
                             radius: 25
                         }
-
+                         */
+                        text: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START" : "STOP"
                         onClicked: {
                             if (deviceDiscoverer.state === DeviceDiscoverer.Idle) {
                                 deviceDiscoverer.start();
