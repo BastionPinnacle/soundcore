@@ -37,7 +37,7 @@ ApplicationWindow {
             id: disconnectedRectangle
 
             anchors.centerIn: parent
-            color: "#17bcef"
+            color: Colors.currentTheme.background
             height: 5 * (parent.height / 6)
             visible: soundcoreApp.state === DeviceConnector.Disconnected
             width: 5 * (parent.width / 6)
@@ -50,55 +50,52 @@ ApplicationWindow {
                 anchors.top: parent.top
                 height: parent.height / 4
 
-                Row {
-                    anchors.centerIn: parent
-                    spacing: 20  // Increased spacing for better button alignment
+                BasicButton {
+                    anchors.fill: parent
+                    buttonText: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START SCANNING FOR DEVICES" : "STOP SCANNING FOR DEVICES"
 
-                    BasicButton {
-                        buttonText: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START" : "STOP"
-
-                        onClicked: {
-                            if (deviceDiscoverer.state === DeviceDiscoverer.Idle) {
-                                deviceDiscoverer.start();
-                            } else {
-                                deviceDiscoverer.stop();
-                            }
+                    onClicked: {
+                        if (deviceDiscoverer.state === DeviceDiscoverer.Idle) {
+                            deviceDiscoverer.start();
+                        } else {
+                            deviceDiscoverer.stop();
                         }
                     }
                 }
             }
 
             // ListView for discovered devices
-            ListView {
-                id: listView
+            GridView {
+                id: devicesGridView
 
                 anchors.bottom: parent.bottom
                 anchors.left: parent.left
-                anchors.right: parent.right
+                anchors.right: parent.horizontalCenter
                 anchors.top: discovererRect.bottom
+                cellHeight: height / 3
+                cellWidth: width / 5
                 model: discoveredDevicesInfoListModel
 
                 delegate: Rectangle {
                     id: delegateRectangle
 
-                    property color clickColor: "#A9DFBF"
-                    property color hoverColor: "#F4F6F6"
+                    color: Colors.currentTheme.cardColor
+                    height: devicesGridView.cellHeight
+                    width: devicesGridView.cellWidth
 
-                    height: parent.height / 6
-                    width: parent.width
-
-                    RowLayout {
+                    ColumnLayout {
                         anchors.centerIn: parent
                         spacing: 15
 
                         Text {
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: Colors.currentTheme.textColor
                             font.pixelSize: 18
                             text: model.name
                         }
                         BasicButton {
+                            anchors.horizontalCenter: parent.horizontalCenter
                             buttonText: "CONNECT"
-
 
                             onClicked: {
                                 console.log(index);
@@ -137,8 +134,9 @@ ApplicationWindow {
 
                     BasicButton {
                         id: btn
-                        backgroundColor: Colors.currentTheme.background
+
                         anchors.centerIn: parent
+                        backgroundColor: Colors.currentTheme.background
                         buttonText: modelData
                         height: parent.height
                         width: parent.width
@@ -165,8 +163,8 @@ ApplicationWindow {
                     model: deviceController.mode_keys
 
                     BasicButton {
-                        buttonText: modelData
                         backgroundColor: Colors.currentTheme.background
+                        buttonText: modelData
                         height: modeColumn.height / 5
                         width: modeColumn.width
 
@@ -178,17 +176,17 @@ ApplicationWindow {
                 }
             }
             BasicButton {
-                buttonText: "DISCONNECT"
-                backgroundColor: Colors.currentTheme.background
-                anchors.left: modeColumn.right
-                anchors.top: parent.top
                 anchors.bottom: parent.bottom
+                anchors.left: modeColumn.right
                 anchors.right: parent.right
+                anchors.top: parent.top
+                backgroundColor: Colors.currentTheme.background
+                buttonText: "DISCONNECT"
+
                 onClicked: {
                     deviceController.disconnectDevice();
                 }
             }
-
         }
     }
 }
