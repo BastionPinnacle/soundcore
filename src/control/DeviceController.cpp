@@ -1,5 +1,11 @@
 #include <QMap>
 #include "soundcore/control/DeviceController.hpp"
+#include <QQmlEngine>
+
+
+DeviceController::DeviceController(QObject *parent) : QObject(parent) {
+    qmlRegisterUncreatableType<Loudness>("Loudness", 1, 0, "Loudness", "Loudness class");
+}
 
 QStringList DeviceController::profileKeys() const {
     return m_equalizer_profiles.keys();
@@ -71,4 +77,41 @@ void DeviceController::chooseMode(QString mode) {
         auto hex_message = QByteArray::fromHex(message);
         emit sendMessage(hex_message);
     }
+
+}
+
+int DeviceController::kHz100() const{
+    return m_loudness.m_kHz100;
+
+};
+
+int DeviceController::kHz200() const{
+    return m_loudness.m_kHz200;
+
+};
+
+int DeviceController::kHz400() const{
+    return m_loudness.m_kHz400;
+}
+
+int DeviceController::kHz800() const{
+    return m_loudness.m_kHz800;
+
+}
+
+int DeviceController::kHz1600() const{
+    return m_loudness.m_kHz1600;
+}
+
+int DeviceController::kHz3200() const{
+    return m_loudness.m_kHz3200;
+
+}
+
+int DeviceController::kHz6400() const{
+    return m_loudness.m_kHz6400;
+}
+
+int DeviceController::kHz12800() const{
+    return m_loudness.m_kHz12800;
 }

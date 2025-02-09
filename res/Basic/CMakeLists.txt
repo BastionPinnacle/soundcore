@@ -1,7 +1,7 @@
 qt_add_library(BasicLib STATIC)
 
 set_target_properties(BasicLib PROPERTIES AUTOMOC ON)
-target_link_libraries(BasicLib PRIVATE Qt6::Quick ColorsLibplugin)
+target_link_libraries(BasicLib PRIVATE Qt6::Quick  Qt6::QuickControls2 ColorsLibplugin)
 
 list(APPEND MODULE_QML_FILES BasicButton.qml)
 

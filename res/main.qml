@@ -12,9 +12,6 @@ import Colors 1.0
 ApplicationWindow {
     id: page
 
-    property var divisorWidth: 5
-
-    color: "lightgray"
     height: Screen.height
     title: "Soundcore Tuner"
     visible: true
@@ -106,10 +103,10 @@ ApplicationWindow {
                 }
             }
         }
-
-        // Connected state
         Rectangle {
             id: connectedRectangle
+
+            property bool useCustomEqualizer: false
 
             anchors.centerIn: parent
             color: Colors.currentTheme.background
@@ -117,74 +114,151 @@ ApplicationWindow {
             visible: soundcoreApp.state === DeviceConnector.Connected
             width: 5 * (parent.width / 6)
 
-            GridView {
-                id: gridView
+            Rectangle {
+                anchors.fill: parent
+                color: Colors.currentTheme.background
+                visible: !parent.useCustomEqualizer
 
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.right: parent.horizontalCenter
-                anchors.top: parent.top
-                cellHeight: height / 11
-                cellWidth: width / 2
-                model: deviceController.profile_keys
+                GridView {
+                    id: gridView
 
-                delegate: Item {
-                    height: gridView.cellHeight
-                    width: gridView.cellWidth
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.horizontalCenter
+                    anchors.top: parent.top
+                    cellHeight: height / 11
+                    cellWidth: width / 2
+                    model: deviceController.profile_keys
 
-                    BasicButton {
-                        id: btn
+                    delegate: Item {
+                        height: gridView.cellHeight
+                        width: gridView.cellWidth
 
+                        BasicButton {
+                            id: btn
+
+                            anchors.centerIn: parent
+                            backgroundColor: Colors.currentTheme.background
+                            buttonText: modelData
+                            height: parent.height
+                            width: parent.width
+
+                            onClicked: {
+                                console.log("Clicked:", buttonText);
+                                deviceController.chooseProfile(buttonText);
+                            }
+                        }
+                    }
+
+                    Component.onCompleted: console.log(deviceController.profile_keys.length)
+                }
+                Column {
+                    id: modeColumn
+
+                    anchors.bottom: parent.bottom
+                    anchors.left: gridView.right
+                    anchors.top: parent.top
+                    width: parent.width / 4
+
+                    Repeater {
                         anchors.centerIn: parent
-                        backgroundColor: Colors.currentTheme.background
-                        buttonText: modelData
-                        height: parent.height
-                        width: parent.width
+                        model: deviceController.mode_keys
 
-                        onClicked: {
-                            console.log("Clicked:", buttonText);
-                            deviceController.chooseProfile(buttonText);
+                        BasicButton {
+                            backgroundColor: Colors.currentTheme.background
+                            buttonText: modelData
+                            height: modeColumn.height / 5
+                            width: modeColumn.width
+
+                            onClicked: {
+                                console.log("Clicked:", buttonText);
+                                deviceController.chooseMode(buttonText);
+                            }
                         }
                     }
                 }
+                BasicButton {
+                    id: customEqualizerButton
 
-                Component.onCompleted: console.log(deviceController.profile_keys.length)
-            }
-            Column {
-                id: modeColumn
+                    anchors.left: modeColumn.right
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    backgroundColor: Colors.currentTheme.background
+                    buttonText: "CUSTOM EQUALIZER"
+                    height: parent.height / 2
 
-                anchors.bottom: parent.bottom
-                anchors.left: gridView.right
-                anchors.top: parent.top
-                width: parent.width / 4
+                    onClicked: {
+                        console.log("CUSTOM EQUALIZER");
+                        connectedRectangle.useCustomEqualizer = true;
+                    }
+                }
+                BasicButton {
+                    id: disconnectButton
 
-                Repeater {
-                    anchors.centerIn: parent
-                    model: deviceController.mode_keys
+                    anchors.bottom: parent.bottom
+                    anchors.left: modeColumn.right
+                    anchors.right: parent.right
+                    anchors.top: customEqualizerButton.bottom
+                    backgroundColor: Colors.currentTheme.background
+                    buttonText: "DISCONNECT"
 
-                    BasicButton {
-                        backgroundColor: Colors.currentTheme.background
-                        buttonText: modelData
-                        height: modeColumn.height / 5
-                        width: modeColumn.width
-
-                        onClicked: {
-                            console.log("Clicked:", buttonText);
-                            deviceController.chooseMode(buttonText);
-                        }
+                    onClicked: {
+                        deviceController.disconnectDevice();
                     }
                 }
             }
-            BasicButton {
-                anchors.bottom: parent.bottom
-                anchors.left: modeColumn.right
-                anchors.right: parent.right
-                anchors.top: parent.top
-                backgroundColor: Colors.currentTheme.background
-                buttonText: "DISCONNECT"
+            Rectangle {
+                anchors.fill: parent
+                color: Colors.currentTheme.background
+                visible: parent.useCustomEqualizer
 
-                onClicked: {
-                    deviceController.disconnectDevice();
+                ColumnLayout {
+                    anchors.fill: parent
+
+                    RowLayout {
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        anchors.fill: parent
+                        spacing: 10 // Adjust spacing as needed
+
+                        ColumnLayout {
+                            spacing: 5
+
+                            Label {
+                                Layout.alignment: Qt.AlignHCenter
+                                color: "white"
+                                font.bold: true
+                                horizontalAlignment: Qt.AlignHCenter
+                                text: "+6 "
+                            }
+                            Slider {
+                                id: singleSlider
+
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                from: -6
+                                orientation: Qt.Vertical
+                                snapMode: Slider.SnapAlways
+                                stepSize: 1
+                                to: 6
+                                value: 0
+                            }
+                            Label {
+                                Layout.alignment: Qt.AlignHCenter
+                                color: "white"
+                                font.bold: true
+                                horizontalAlignment: Qt.AlignHCenter
+                                text: "-6 "
+                            }
+                            Label {
+                                Layout.alignment: Qt.AlignHCenter
+                                color: "white"
+                                font.bold: true
+                                horizontalAlignment: Qt.AlignHCenter
+                                text: "100kHz"
+                            }
+                        }
+                    }
                 }
             }
         }
