@@ -222,33 +222,16 @@ ApplicationWindow {
                         spacing: 10 // Adjust spacing as needed
 
                         ColumnLayout {
-                            spacing: 5
-
-                            Label {
+                            spacing: 10
+                            BasicSlider {
+                                id:singleSlider
                                 Layout.alignment: Qt.AlignHCenter
-                                color: "white"
-                                font.bold: true
-                                horizontalAlignment: Qt.AlignHCenter
-                                text: "+6 "
-                            }
-                            Slider {
-                                id: singleSlider
-
                                 Layout.fillHeight: true
-                                Layout.fillWidth: true
-                                from: -6
-                                orientation: Qt.Vertical
-                                snapMode: Slider.SnapAlways
-                                stepSize: 1
-                                to: 6
-                                value: 0
-                            }
-                            Label {
-                                Layout.alignment: Qt.AlignHCenter
-                                color: "white"
-                                font.bold: true
-                                horizontalAlignment: Qt.AlignHCenter
-                                text: "-6 "
+                                sliderWidth: 40
+                                value: -6
+                                onMoved: {
+                                    console.log(value)
+                                }
                             }
                             Label {
                                 Layout.alignment: Qt.AlignHCenter
