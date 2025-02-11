@@ -101,14 +101,11 @@ void DeviceController::onKHzChanged() {
     auto hex_string_crc = QString::number(crc,16);
     auto hex_crc = QByteArray::fromHex(hex_string_crc.toStdString().c_str());
     message.append(hex_crc);
-    qDebug() << "SENT: " << message.toHex();
     sendMessage(message);
 }
 
 void DeviceController::updateValue(int index, int value) {
-    qDebug() << "updateValue: " << index;
     if (index >= 0 && index < m_kHz.size()) {
-        qDebug() << "updateValue2";
         m_kHz[index] = value;
         emit kHzChanged();
     }

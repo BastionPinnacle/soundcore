@@ -61,7 +61,6 @@ ApplicationWindow {
                 }
             }
 
-            // ListView for discovered devices
             GridView {
                 id: devicesGridView
 
