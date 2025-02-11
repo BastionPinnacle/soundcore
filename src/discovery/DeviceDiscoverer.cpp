@@ -13,14 +13,14 @@ void DeviceDiscoverer::start() {
     m_state = State::Discovering;
     m_device_discovery_agent.start();
     emit stateChanged(m_state);
-    qDebug() << "DeviceDiscoverer::start() called";
+    //qDebug() << "DeviceDiscoverer::start() called";
 }
 
 void DeviceDiscoverer::stop() {
     m_state = State::Idle;
     m_device_discovery_agent.stop();
     emit stateChanged(m_state);
-    qDebug() << "DeviceDiscoverer::stop() called";
+    //qDebug() << "DeviceDiscoverer::stop() called";
 }
 
 DeviceDiscoverer::DeviceDiscoverer(QObject *parent) {
@@ -29,7 +29,7 @@ DeviceDiscoverer::DeviceDiscoverer(QObject *parent) {
 }
 
 void DeviceDiscoverer::onDeviceDiscovered(QBluetoothDeviceInfo device_info) {
-    qDebug() << "Discovered Device";
+    //qDebug() << "Discovered Device";
     emit deviceDiscovered(device_info);
 }
 

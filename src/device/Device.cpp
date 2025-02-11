@@ -3,7 +3,7 @@
 const QByteArray Worker::get_state_message = QByteArray::fromHex("08ee00000001010a0002");
 
 void Worker::onInitiateConnect(QBluetoothDeviceInfo device_info) {
-    qDebug() << "Initiate connect" <<  QThread::currentThread();
+    //qDebug() << "Initiate connect" <<  QThread::currentThread();
     if(!m_socket)
     {
         m_socket = new QBluetoothSocket(nullptr);
@@ -75,7 +75,7 @@ void Worker::onInitiateDisconnect() {
 
 void Worker::onConnectedSocket() {
     m_service_discovery_agent->stop();
-    qDebug() << "CONNECTED socket";
+    //qDebug() << "CONNECTED socket";
     connected = true;
     receive_timer->start();
     transmit_timer->start();
@@ -95,7 +95,7 @@ void Worker::onSendMessage(QByteArray message) {
 
 Device::Device() {
     Worker *worker = new Worker();
-    qDebug() << &worker_thread;
+    //qDebug() << &worker_thread;
     worker->moveToThread(&worker_thread);
     connect(&worker_thread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &Device::initiateConnect, worker, &Worker::onInitiateConnect);
@@ -114,7 +114,7 @@ Device::~Device() {
 }
 
 void Device::onSendMessage(QByteArray message) {
-    qDebug() << "sendMessage";
+    //qDebug() << "sendMessage";
     emit sendMessage(message);
 }
 
