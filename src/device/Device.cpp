@@ -3,7 +3,6 @@
 const QByteArray Worker::get_state_message = QByteArray::fromHex("08ee00000001010a0002");
 
 void Worker::onInitiateConnect(QBluetoothDeviceInfo device_info) {
-    //qDebug() << "Initiate connect" <<  QThread::currentThread();
     if(!m_socket)
     {
         m_socket = new QBluetoothSocket(nullptr);
@@ -31,9 +30,8 @@ void Worker::onInitiateConnect(QBluetoothDeviceInfo device_info) {
                 auto received = m_socket->read(MAX_READ_LENGTH);
                 if(received.size()>0)
                 {
-                    //qDebug() << received.toHex();
+                    emit receivedMessage(received);
                 }
-                receive_buffer.append(received);
             }
         });
     }
@@ -42,10 +40,6 @@ void Worker::onInitiateConnect(QBluetoothDeviceInfo device_info) {
         transmit_timer = new QTimer(nullptr);
         connect(transmit_timer, &QTimer::timeout, [this]() {
             if (connected) {
-                if(transmit_buffer.size()>0)
-                {
-                    //qDebug() << transmit_buffer.toHex();
-                }
                 auto number_of_bytes_sent = m_socket->write(transmit_buffer);
                 transmit_buffer = transmit_buffer.mid(number_of_bytes_sent);
             }
@@ -75,7 +69,6 @@ void Worker::onInitiateDisconnect() {
 
 void Worker::onConnectedSocket() {
     m_service_discovery_agent->stop();
-    //qDebug() << "CONNECTED socket";
     connected = true;
     receive_timer->start();
     transmit_timer->start();
@@ -95,7 +88,6 @@ void Worker::onSendMessage(QByteArray message) {
 
 Device::Device() {
     Worker *worker = new Worker();
-    //qDebug() << &worker_thread;
     worker->moveToThread(&worker_thread);
     connect(&worker_thread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &Device::initiateConnect, worker, &Worker::onInitiateConnect);
@@ -103,8 +95,7 @@ Device::Device() {
     connect(this, &Device::sendMessage, worker, &Worker::onSendMessage);
     connect(worker, &Worker::finalizeDisconnect, this, &Device::onFinalizeDisconnect);
     connect(worker, &Worker::finalizeConnect, this, &Device::onFinalizeConnect);
-
-
+    connect(worker, &Worker::receivedMessage, this, &Device::onReceivedMessage);
     worker_thread.start();
 }
 
@@ -114,7 +105,6 @@ Device::~Device() {
 }
 
 void Device::onSendMessage(QByteArray message) {
-    //qDebug() << "sendMessage";
     emit sendMessage(message);
 }
 
@@ -132,4 +122,8 @@ void Device::onFinalizeConnect() {
 
 void Device::onFinalizeDisconnect() {
     emit finalizeDisconnect();
+}
+
+void Device::onReceivedMessage(QByteArray message) {
+    emit receivedMessage(message);
 }

@@ -28,6 +28,8 @@ App::App(DeviceDiscoverer &new_device_discoverer,
     connect(&m_device, &Device::finalizeDisconnect, &m_device_controller, &DeviceController::onFinalizeDisconnect);
     // connection between DeviceController and Device
     connect(&m_device_controller, &DeviceController::sendMessage, &m_device, &Device::onSendMessage);
+    //connection between Device and DeviceController
+    connect(&m_device, &Device::receivedMessage, &m_device_controller, &DeviceController::onReceivedMessage);
     // connection between DeviceController and DeviceConnector
     connect(&m_device_controller, &DeviceController::initiateDisconnect, &m_device_connector,
             &DeviceConnector::onInitiateDisconnect);

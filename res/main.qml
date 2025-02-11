@@ -60,7 +60,6 @@ ApplicationWindow {
                     }
                 }
             }
-
             GridView {
                 id: devicesGridView
 
@@ -211,12 +210,12 @@ ApplicationWindow {
                     anchors.fill: parent
                     spacing: 10
 
-
-
                     Repeater {
                         id: kHzRepeater
-                        model: deviceController.kHz
+
                         property var kHzList: ["100kHz", "200kHz", "400kHz", "800kHz", "1600kHz", "3200kHz", "6400kHz", "12800kHz"]
+
+                        model: deviceController.kHz
 
                         ColumnLayout {
                             spacing: 10
@@ -242,6 +241,31 @@ ApplicationWindow {
                                 horizontalAlignment: Qt.AlignHCenter
                                 text: kHzRepeater.kHzList[index]
                             }
+                        }
+                    }
+                    ListView {
+                        id: customListView
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillHeight: true
+                        model: deviceController.profile_keys
+                        width: 200
+
+                        delegate: BasicButton {
+                            id: btn
+
+                            backgroundColor: Colors.currentTheme.cardColor
+                            buttonText: modelData
+                            implicitHeight: 40
+                            implicitWidth: 200
+                            width: implicitWidth
+                            height: implicitHeight
+
+                            onClicked: {
+                                deviceController.chooseProfile(buttonText);
+                            }
+                        }
+                        Component.onCompleted: {
+                            console.log(model.length)
                         }
                     }
                 }

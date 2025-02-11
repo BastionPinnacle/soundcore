@@ -45,10 +45,13 @@ public slots:
 
     void onKHzChanged();
 
+    void onReceivedMessage(QByteArray message);
+
 private:
     const static QMap<QString, QString> m_equalizer_profiles;
     const static QMap<QString, QString> m_modes;
+    const static QByteArray m_ack_message;
     bool m_control_available = false;
-    QList<int> m_kHz = {0,0,0,0,0,0,0,0};
+    QList<int> m_kHz = {120,120,120,120,120,120,120,120};
 };
 

@@ -63,6 +63,8 @@ const QMap<QString, QString> DeviceController::m_modes = {
         {"ANC Transport", "08ee00000006810e00000001008c"}
 };
 
+const QByteArray DeviceController::m_ack_message = QByteArray::fromHex("09ff00000102810a0096");
+
 void DeviceController::chooseProfile(QString profile) {
     if (m_equalizer_profiles.contains(profile)) {
         QByteArray message = m_equalizer_profiles[profile].toStdString().c_str();
@@ -87,9 +89,9 @@ QList<int> DeviceController::kHz(){
 void DeviceController::onKHzChanged() {
     auto message = QByteArray::fromHex("08ee00000002811400fefe");
     foreach(auto value, m_kHz){
-            auto scaled_value = value*10 + 120;
-            scaled_value = scaled_value & 0xFF;
-            auto hex_string_value = QString::number(scaled_value, 16);
+            value = value & 0xFF;
+            qDebug() << value;
+            auto hex_string_value = QString::number(value, 16);
             auto hex_value = QByteArray::fromHex(hex_string_value.toStdString().c_str());
             message.append(hex_value);
         };
@@ -108,5 +110,32 @@ void DeviceController::updateValue(int index, int value) {
     if (index >= 0 && index < m_kHz.size()) {
         m_kHz[index] = value;
         emit kHzChanged();
+    }
+}
+
+void DeviceController::onReceivedMessage(QByteArray message) {
+    int index = message.indexOf(m_ack_message);
+    while (index != -1) {
+        message.remove(index, m_ack_message.length());
+        index = message.indexOf(m_ack_message);
+    }
+    qDebug() << message.toHex();
+    message = message.right(70);
+    if(message.size() >= 70)
+    {
+        bool changed = false;
+        for(int i = 0 ; i < 8; i++)
+        {
+            auto byte_value = message.mid(13+i,1).toHex();
+            auto int_value = byte_value.toInt(nullptr,16);
+            if(m_kHz[i]!=int_value)
+            {
+                m_kHz[i] = int_value;
+                changed = true;
+            }
+        }
+        if(changed){
+            emit kHzChanged();
+        }
     }
 }

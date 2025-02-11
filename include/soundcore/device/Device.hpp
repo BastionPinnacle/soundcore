@@ -37,11 +37,12 @@ signals:
 
     void finalizeDisconnect();
 
+    void receivedMessage(QByteArray message);
+
 private:
     const static QByteArray get_state_message;
     QBluetoothServiceDiscoveryAgent* m_service_discovery_agent;
     QBluetoothSocket* m_socket;
-    QByteArray receive_buffer;
     QByteArray transmit_buffer;
     QTimer* receive_timer;
     QTimer* transmit_timer;
@@ -67,6 +68,8 @@ public
 
     void onSendMessage(QByteArray message);
 
+    void onReceivedMessage(QByteArray message);
+
     void onFinalizeConnect();
 
     void onFinalizeDisconnect();
@@ -78,6 +81,8 @@ signals:
     void finalizeDisconnect();
 
     void sendMessage(QByteArray message);
+
+    void receivedMessage(QByteArray message);
 
     void initiateConnect(QBluetoothDeviceInfo device_info);
 

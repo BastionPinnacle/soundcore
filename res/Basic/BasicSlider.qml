@@ -7,11 +7,12 @@ Slider {
 
     property int sliderWidth: 40
 
-    from: -6
+    from: 60
     orientation: Qt.Vertical
+    snapMode: Slider.SnapOnRelease
     stepSize: 1
-    to: 6
-    value: 0
+    to: 180
+    value: 120
 
     background: Rectangle {
         anchors.horizontalCenter: singleSlider.horizontalCenter
