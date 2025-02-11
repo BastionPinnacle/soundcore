@@ -4,7 +4,7 @@
 
 
 DeviceController::DeviceController(QObject *parent) : QObject(parent) {
-    qmlRegisterUncreatableType<Loudness>("Loudness", 1, 0, "Loudness", "Loudness class");
+    connect(this, &DeviceController::kHzChanged, this, &DeviceController::onKHzChanged);
 }
 
 QStringList DeviceController::profileKeys() const {
@@ -80,38 +80,36 @@ void DeviceController::chooseMode(QString mode) {
 
 }
 
-int DeviceController::kHz100() const{
-    return m_loudness.m_kHz100;
-
-};
-
-int DeviceController::kHz200() const{
-    return m_loudness.m_kHz200;
-
-};
-
-int DeviceController::kHz400() const{
-    return m_loudness.m_kHz400;
+QList<int> DeviceController::kHz(){
+    return m_kHz;
 }
 
-int DeviceController::kHz800() const{
-    return m_loudness.m_kHz800;
-
+void DeviceController::onKHzChanged() {
+    auto message = QByteArray::fromHex("08ee00000002811400fefe");
+    foreach(auto value, m_kHz){
+            auto scaled_value = value*10 + 120;
+            scaled_value = scaled_value & 0xFF;
+            auto hex_string_value = QString::number(scaled_value, 16);
+            auto hex_value = QByteArray::fromHex(hex_string_value.toStdString().c_str());
+            message.append(hex_value);
+        };
+    int crc = 0;
+    foreach(auto byte, message){
+        crc+=byte;
+    };
+    crc &= 0xFF;
+    auto hex_string_crc = QString::number(crc,16);
+    auto hex_crc = QByteArray::fromHex(hex_string_crc.toStdString().c_str());
+    message.append(hex_crc);
+    qDebug() << "SENT: " << message.toHex();
+    sendMessage(message);
 }
 
-int DeviceController::kHz1600() const{
-    return m_loudness.m_kHz1600;
-}
-
-int DeviceController::kHz3200() const{
-    return m_loudness.m_kHz3200;
-
-}
-
-int DeviceController::kHz6400() const{
-    return m_loudness.m_kHz6400;
-}
-
-int DeviceController::kHz12800() const{
-    return m_loudness.m_kHz12800;
+void DeviceController::updateValue(int index, int value) {
+    qDebug() << "updateValue: " << index;
+    if (index >= 0 && index < m_kHz.size()) {
+        qDebug() << "updateValue2";
+        m_kHz[index] = value;
+        emit kHzChanged();
+    }
 }

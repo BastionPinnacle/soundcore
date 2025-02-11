@@ -9,7 +9,6 @@ Slider {
 
     from: -6
     orientation: Qt.Vertical
-    snapMode: Slider.SnapAlways
     stepSize: 1
     to: 6
     value: 0

@@ -6,7 +6,6 @@ add_library(${PROJECT_NAME} ${HEADERS}
         discovery/DeviceDiscoverer.cpp
         list/DiscoveredDevicesInfoListModel.cpp
         device/Device.cpp
-        device/Device2.cpp
         control/DeviceController.cpp
 )
 

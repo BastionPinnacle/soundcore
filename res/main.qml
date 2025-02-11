@@ -95,7 +95,6 @@ ApplicationWindow {
                             buttonText: "CONNECT"
 
                             onClicked: {
-                                console.log(index);
                                 discoveredDevicesInfoListModel.connectDeviceOnCurrentIndex(index);
                             }
                         }
@@ -144,13 +143,10 @@ ApplicationWindow {
                             width: parent.width
 
                             onClicked: {
-                                console.log("Clicked:", buttonText);
                                 deviceController.chooseProfile(buttonText);
                             }
                         }
                     }
-
-                    Component.onCompleted: console.log(deviceController.profile_keys.length)
                 }
                 Column {
                     id: modeColumn
@@ -171,7 +167,6 @@ ApplicationWindow {
                             width: modeColumn.width
 
                             onClicked: {
-                                console.log("Clicked:", buttonText);
                                 deviceController.chooseMode(buttonText);
                             }
                         }
@@ -188,7 +183,6 @@ ApplicationWindow {
                     height: parent.height / 2
 
                     onClicked: {
-                        console.log("CUSTOM EQUALIZER");
                         connectedRectangle.useCustomEqualizer = true;
                     }
                 }
@@ -212,25 +206,34 @@ ApplicationWindow {
                 color: Colors.currentTheme.background
                 visible: parent.useCustomEqualizer
 
-                ColumnLayout {
+                RowLayout {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
                     anchors.fill: parent
+                    spacing: 10
 
-                    RowLayout {
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        anchors.fill: parent
-                        spacing: 10 // Adjust spacing as needed
+
+
+                    Repeater {
+                        id: kHzRepeater
+                        model: deviceController.kHz
+                        property var kHzList: ["100kHz", "200kHz", "400kHz", "800kHz", "1600kHz", "3200kHz", "6400kHz", "12800kHz"]
 
                         ColumnLayout {
                             spacing: 10
+
                             BasicSlider {
-                                id:singleSlider
+                                id: singleSlider
+
                                 Layout.alignment: Qt.AlignHCenter
                                 Layout.fillHeight: true
                                 sliderWidth: 40
-                                value: -6
-                                onMoved: {
-                                    console.log(value)
+                                value: modelData
+
+                                onPressedChanged: {
+                                    if (!pressed) {
+                                        deviceController.updateValue(index, value);
+                                    }
                                 }
                             }
                             Label {
@@ -238,7 +241,7 @@ ApplicationWindow {
                                 color: "white"
                                 font.bold: true
                                 horizontalAlignment: Qt.AlignHCenter
-                                text: "100kHz"
+                                text: kHzRepeater.kHzList[index]
                             }
                         }
                     }
