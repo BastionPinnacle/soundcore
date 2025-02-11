@@ -23,13 +23,6 @@ ApplicationWindow {
         anchors.fill: parent
         color: Colors.currentTheme.background
 
-        Image {
-            id: mainImage
-
-            anchors.fill: parent
-            source: "/images/soundcore.png"
-            visible: soundcoreApp.state === DeviceConnector.Connecting || soundcoreApp.state === DeviceConnector.Disconnecting
-        }
         Rectangle {
             id: disconnectedRectangle
 
@@ -263,9 +256,6 @@ ApplicationWindow {
                             onClicked: {
                                 deviceController.chooseProfile(buttonText);
                             }
-                        }
-                        Component.onCompleted: {
-                            console.log(model.length)
                         }
                     }
                 }
