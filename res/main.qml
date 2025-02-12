@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Window 2.15
+import QtQuick.Shapes 1.15
 import QtQuick.Layouts
 import App 1.0
 import DeviceConnector 1.0
@@ -17,6 +18,95 @@ ApplicationWindow {
     visible: true
     width: Screen.width
 
+    Rectangle {
+        id: deviceRectangle
+
+        property int buttonCount: 6
+
+        anchors.fill: parent
+        color: Colors.currentTheme.background
+
+        Button {
+            id: scanButton
+
+            property int diameter: Math.min(parent.width, parent.height) / 3
+
+            anchors.centerIn: parent
+            height: diameter
+            text: "SCAN"
+            width: diameter
+
+            background: Rectangle {
+                border.color: Colors.curentTheme.borderColor
+                border.width: 5
+                color: Colors.currentTheme.cardColor
+                radius: scanButton.diameter / 2
+            }
+            contentItem: Text {
+                color: Colors.currentTheme.textColor
+                font.pixelSize: parent.diameter / 3
+                horizontalAlignment: Text.AlignHCenter
+                text: parent.text
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            onClicked: console.log("Main button clicked!")
+
+            Shape {
+                id: arcShape
+
+                anchors.centerIn: scanButton  // Center it around the button
+
+                height: (scanButton.diameter) * 4 / 3
+                layer.enabled: true
+                layer.samples: 4
+                width: (scanButton.diameter) * 4 / 3  // Slightly larger than button
+
+                ShapePath {
+                    id: shapePath
+
+                    capStyle: ShapePath.FlatCap
+                    fillColor: "transparent"
+                    strokeColor: Colors.currentTheme.cardColor
+                    strokeWidth: (scanButton.diameter / 3) * 2 - (scanButton.diameter / 2)
+
+                    PathAngleArc {
+                        id: pathAngleArc
+
+                        centerX: arcShape.width / 2
+                        centerY: arcShape.height / 2
+                        radiusX: (scanButton.diameter / 2) + shapePath.strokeWidth / 2
+                        radiusY: (scanButton.diameter / 2) + shapePath.strokeWidth / 2
+                        startAngle: 0
+                        sweepAngle: 20  // Full circle
+                    }
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    propagateComposedEvents: true
+
+
+                    onClicked: mouse => {
+                        var dx = mouse.x - arcShape.width / 2;
+                        var dy = mouse.y - arcShape.height / 2;
+                        var distance = Math.sqrt(dx * dx + dy * dy);
+                        console.log(distance);
+                        console.log(pathAngleArc.radiusX);
+                        console.log(pathAngleArc.radiusX + shapePath.strokeWidth);
+                        if (distance >= (scanButton.diameter / 2) && distance <= (scanButton.diameter / 2) + shapePath.strokeWidth) {
+                            console.log("Arc clicked!");
+                            mouse.accepted = true;
+                        } else {
+                            console.log("Propagate");
+                            mouse.accepted = false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*
     Rectangle {
         id: deviceRectangle
 
@@ -60,8 +150,8 @@ ApplicationWindow {
                 anchors.left: parent.left
                 anchors.right: parent.horizontalCenter
                 anchors.top: discovererRect.bottom
-                cellHeight: height / 3
-                cellWidth: width / 5
+                cellHeight: height / 2
+                cellWidth: width / 4
                 model: discoveredDevicesInfoListModel
 
                 delegate: Rectangle {
@@ -198,8 +288,6 @@ ApplicationWindow {
                 visible: parent.useCustomEqualizer
 
                 RowLayout {
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
                     anchors.fill: parent
                     spacing: 10
 
@@ -231,7 +319,6 @@ ApplicationWindow {
                                 Layout.alignment: Qt.AlignHCenter
                                 color: "white"
                                 font.bold: true
-                                horizontalAlignment: Qt.AlignHCenter
                                 text: kHzRepeater.kHzList[index]
                             }
                         }
@@ -262,4 +349,5 @@ ApplicationWindow {
             }
         }
     }
+ */
 }
