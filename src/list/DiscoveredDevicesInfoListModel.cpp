@@ -7,8 +7,8 @@ void DiscoveredDevicesInfoListModel::onDeviceDiscovered(QBluetoothDeviceInfo dev
     if (!m_devices_list.contains(device)) {
         beginInsertRows(QModelIndex(), m_devices_list.size(), m_devices_list.size());
         m_devices_list.append(device);
-        qDebug() << m_devices_list.size();
         endInsertRows();
+        emit countChanged(m_devices_list.size());
     }
 }
 
@@ -52,4 +52,9 @@ void DiscoveredDevicesInfoListModel::onResetDiscoveredDevices(){
     beginResetModel();
     m_devices_list.clear();
     endResetModel();
+    emit countChanged(m_devices_list.size());
+}
+
+int DiscoveredDevicesInfoListModel::count(){
+    return m_devices_list.size();
 }

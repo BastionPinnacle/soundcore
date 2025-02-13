@@ -11,12 +11,14 @@ public:
         NameRole = Qt::UserRole + 1,
         AddressRole
     };
+    Q_PROPERTY(int count READ count NOTIFY countChanged);
     Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = DeviceRoles::NameRole) const override;
-
+    int count();
     Q_INVOKABLE void connectDeviceOnCurrentIndex(int index);
     signals:
     void connectDevice(QBluetoothDeviceInfo device_info);
+    void countChanged(int count);
 protected:
     QHash<int, QByteArray> roleNames() const override;
 public slots:
