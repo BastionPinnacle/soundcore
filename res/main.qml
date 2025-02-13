@@ -21,10 +21,9 @@ ApplicationWindow {
     Rectangle {
         id: deviceRectangle
 
-        property int buttonCount: 6
-
         anchors.fill: parent
         color: Colors.currentTheme.background
+        visible: soundcoreApp.state === DeviceConnector.Disconnected
 
         Button {
             id: scanButton
@@ -69,7 +68,6 @@ ApplicationWindow {
 
                 onFinished: scanButton.scale = 1.0
             }
-
             ColorAnimation {
                 id: buttonColorAnimation
 
@@ -82,7 +80,6 @@ ApplicationWindow {
 
                 onFinished: scanButton.background.color = Colors.currentTheme.cardColor
             }
-
             Repeater {
                 model: discoveredDevicesInfoListModel
 
@@ -94,7 +91,6 @@ ApplicationWindow {
                     property int singleElementAngle: 360 / numberOfHypotheticalDevices
 
                     anchors.centerIn: scanButton
-
                     height: (scanButton.diameter) * 2
                     layer.enabled: true
                     layer.samples: 4
@@ -145,7 +141,7 @@ ApplicationWindow {
                                 colorChangeAnimation.start();
                             } else {
                                 if (distance <= (scanButton.diameter / 2)) {
-                                    scanButton.onPressed()
+                                    scanButton.onPressed();
                                 }
                             }
                         }
@@ -178,249 +174,120 @@ ApplicationWindow {
             }
         }
     }
-
-    /*
     Rectangle {
-        id: deviceRectangle
-
         anchors.fill: parent
         color: Colors.currentTheme.background
+        visible: soundcoreApp.state === DeviceConnector.Connected
 
-        Rectangle {
-            id: disconnectedRectangle
+        RowLayout {
+            anchors.fill: parent
+            spacing: 10
 
-            anchors.centerIn: parent
-            color: Colors.currentTheme.background
-            height: 5 * (parent.height / 6)
-            visible: soundcoreApp.state === DeviceConnector.Disconnected
-            width: 5 * (parent.width / 6)
+            Repeater {
+                id: kHzRepeater
 
-            Rectangle {
-                id: discovererRect
+                property var kHzList: ["100kHz", "200kHz", "400kHz", "800kHz", "1600kHz", "3200kHz", "6400kHz", "12800kHz"]
 
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                height: parent.height / 4
+                model: deviceController.kHz
 
-                BasicButton {
-                    anchors.fill: parent
-                    buttonText: deviceDiscoverer.state === DeviceDiscoverer.Idle ? "START SCANNING FOR DEVICES" : "STOP SCANNING FOR DEVICES"
+                ColumnLayout {
+                    spacing: 10
 
-                    onClicked: {
-                        if (deviceDiscoverer.state === DeviceDiscoverer.Idle) {
-                            deviceDiscoverer.start();
-                        } else {
-                            deviceDiscoverer.stop();
-                        }
-                    }
-                }
-            }
-            GridView {
-                id: devicesGridView
+                    BasicSlider {
+                        id: singleSlider
 
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.right: parent.horizontalCenter
-                anchors.top: discovererRect.bottom
-                cellHeight: height / 2
-                cellWidth: width / 4
-                model: discoveredDevicesInfoListModel
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillHeight: true
+                        sliderWidth: 40
+                        value: modelData
 
-                delegate: Rectangle {
-                    id: delegateRectangle
-
-                    color: Colors.currentTheme.cardColor
-                    height: devicesGridView.cellHeight
-                    width: devicesGridView.cellWidth
-
-                    ColumnLayout {
-                        anchors.centerIn: parent
-                        spacing: 15
-
-                        Text {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            color: Colors.currentTheme.textColor
-                            font.pixelSize: 18
-                            text: model.name
-                        }
-                        BasicButton {
-                            anchors.horizontalCenter: parent.horizontalCenter
-                            buttonText: "CONNECT"
-
-                            onClicked: {
-                                discoveredDevicesInfoListModel.connectDeviceOnCurrentIndex(index);
+                        onPressedChanged: {
+                            if (!pressed) {
+                                deviceController.updateValue(index, value);
                             }
                         }
                     }
+                    Label {
+                        Layout.alignment: Qt.AlignHCenter
+                        color: "white"
+                        font.bold: true
+                        text: kHzRepeater.kHzList[index]
+                    }
                 }
             }
-        }
-        Rectangle {
-            id: connectedRectangle
-
-            property bool useCustomEqualizer: false
-
-            anchors.centerIn: parent
-            color: Colors.currentTheme.background
-            height: 5 * (parent.height / 6)
-            visible: soundcoreApp.state === DeviceConnector.Connected
-            width: 5 * (parent.width / 6)
-
             Rectangle {
-                anchors.fill: parent
+                Layout.fillHeight: true
                 color: Colors.currentTheme.background
-                visible: !parent.useCustomEqualizer
+                width: 200
 
-                GridView {
-                    id: gridView
+                ListView {
+                    id: profileListView
 
-                    anchors.bottom: parent.bottom
-                    anchors.left: parent.left
-                    anchors.right: parent.horizontalCenter
-                    anchors.top: parent.top
-                    cellHeight: height / 11
-                    cellWidth: width / 2
+                    height: Math.min(contentHeight, parent.height - y)
+                    interactive: false
                     model: deviceController.profile_keys
+                    width: parent.width
+                    y: parent.height / 10
 
-                    delegate: Item {
-                        height: gridView.cellHeight
-                        width: gridView.cellWidth
+                    delegate: BasicButton {
+                        id: btn
 
-                        BasicButton {
-                            id: btn
+                        backgroundColor: Colors.currentTheme.cardColor
+                        buttonText: modelData
+                        height: implicitHeight
+                        implicitHeight: 40
+                        width: profileListView.width
 
-                            anchors.centerIn: parent
-                            backgroundColor: Colors.currentTheme.background
-                            buttonText: modelData
-                            height: parent.height
-                            width: parent.width
-
-                            onClicked: {
-                                deviceController.chooseProfile(buttonText);
-                            }
+                        onClicked: {
+                            deviceController.chooseProfile(buttonText);
                         }
                     }
                 }
-                Column {
-                    id: modeColumn
+            }
+            Rectangle {
+                Layout.fillHeight: true
+                color: Colors.currentTheme.background
+                width: 200
 
-                    anchors.bottom: parent.bottom
-                    anchors.left: gridView.right
-                    anchors.top: parent.top
-                    width: parent.width / 4
+                ListView {
+                    id: modeListView
 
-                    Repeater {
-                        anchors.centerIn: parent
-                        model: deviceController.mode_keys
+                    height: Math.min(contentHeight, parent.height - y)
+                    interactive: false
+                    model: deviceController.mode_keys
+                    width: parent.width
+                    y: parent.height / 10
 
-                        BasicButton {
-                            backgroundColor: Colors.currentTheme.background
-                            buttonText: modelData
-                            height: modeColumn.height / 5
-                            width: modeColumn.width
+                    delegate: BasicButton {
+                        id: btn
 
-                            onClicked: {
-                                deviceController.chooseMode(buttonText);
-                            }
+                        backgroundColor: Colors.currentTheme.cardColor
+                        buttonText: modelData
+                        height: implicitHeight
+                        implicitHeight: 40
+                        implicitWidth: 200
+                        width: implicitWidth
+
+                        onClicked: {
+                            deviceController.chooseMode(buttonText);
                         }
                     }
                 }
                 BasicButton {
-                    id: customEqualizerButton
-
-                    anchors.left: modeColumn.right
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    backgroundColor: Colors.currentTheme.background
-                    buttonText: "CUSTOM EQUALIZER"
-                    height: parent.height / 2
-
-                    onClicked: {
-                        connectedRectangle.useCustomEqualizer = true;
-                    }
-                }
-                BasicButton {
-                    id: disconnectButton
-
                     anchors.bottom: parent.bottom
-                    anchors.left: modeColumn.right
-                    anchors.right: parent.right
-                    anchors.top: customEqualizerButton.bottom
-                    backgroundColor: Colors.currentTheme.background
+                    anchors.bottomMargin: parent.height/10
+                    backgroundColor: Colors.currentTheme.cardColor
                     buttonText: "DISCONNECT"
+                    height: implicitHeight
+                    implicitHeight: 40
+                    implicitWidth: 200
+                    width: implicitWidth
 
                     onClicked: {
                         deviceController.disconnectDevice();
                     }
                 }
             }
-            Rectangle {
-                anchors.fill: parent
-                color: Colors.currentTheme.background
-                visible: parent.useCustomEqualizer
-
-                RowLayout {
-                    anchors.fill: parent
-                    spacing: 10
-
-                    Repeater {
-                        id: kHzRepeater
-
-                        property var kHzList: ["100kHz", "200kHz", "400kHz", "800kHz", "1600kHz", "3200kHz", "6400kHz", "12800kHz"]
-
-                        model: deviceController.kHz
-
-                        ColumnLayout {
-                            spacing: 10
-
-                            BasicSlider {
-                                id: singleSlider
-
-                                Layout.alignment: Qt.AlignHCenter
-                                Layout.fillHeight: true
-                                sliderWidth: 40
-                                value: modelData
-
-                                onPressedChanged: {
-                                    if (!pressed) {
-                                        deviceController.updateValue(index, value);
-                                    }
-                                }
-                            }
-                            Label {
-                                Layout.alignment: Qt.AlignHCenter
-                                color: "white"
-                                font.bold: true
-                                text: kHzRepeater.kHzList[index]
-                            }
-                        }
-                    }
-                    ListView {
-                        id: customListView
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.fillHeight: true
-                        model: deviceController.profile_keys
-                        width: 200
-
-                        delegate: BasicButton {
-                            id: btn
-
-                            backgroundColor: Colors.currentTheme.cardColor
-                            buttonText: modelData
-                            implicitHeight: 40
-                            implicitWidth: 200
-                            width: implicitWidth
-                            height: implicitHeight
-
-                            onClicked: {
-                                deviceController.chooseProfile(buttonText);
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
- */
 }
